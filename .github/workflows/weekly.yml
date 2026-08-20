@@ -1,0 +1,170 @@
+# S2-8 Weekly Report + Telegram Scoreboard
+# =========================================
+#
+# Un generador, dos salidas:
+# 1. Telegram scoreboard del lunes (#5 punto 3)
+# 2. S2-8 weekly report para dashboard
+#
+# Al activar este workflow:
+# - Retirar la revisión-interina del lunes de Claude
+# - Avisar al director para borrar la tarea programada
+
+name: S2-8 Weekly Report
+
+on:
+  schedule:
+    # Every Monday at 7:00 AM UTC (9:00 AM Madrid summer time)
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      week_override:
+        description: 'Override week (YYYY-MM-DD, any day in target week)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  generate-reports:
+    name: "📊 Generate Weekly Reports"
+    runs-on: ubuntu-latest
+    
+    outputs:
+      telegram_message: ${{ steps.generate.outputs.telegram }}
+      s2_8_report: ${{ steps.generate.outputs.s2_8 }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install -q requests
+      
+      - name: Generate Reports
+        id: generate
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          WEEK_OVERRIDE: ${{ inputs.week_override }}
+        run: |
+          python << 'SCRIPT'
+          import os
+          import sys
+          sys.path.insert(0, '.')
+          
+          from datetime import datetime
+          from src.reports.weekly_scoreboard import (
+              WeeklyScoreboardGenerator,
+              WeeklyMetrics,
+              BookPerformance,
+              OutputFormat,
+          )
+          
+          # Initialize generator
+          generator = WeeklyScoreboardGenerator()
+          
+          # Parse week override if provided
+          week_of = None
+          if os.environ.get('WEEK_OVERRIDE'):
+              week_of = datetime.fromisoformat(os.environ['WEEK_OVERRIDE'])
+          
+          # Fetch metrics (in production, this would query Supabase)
+          metrics = generator.fetch_metrics(week_of)
+          
+          # Generate both outputs from single source
+          outputs = generator.generate(metrics, OutputFormat.BOTH)
+          
+          # Write outputs for subsequent steps
+          with open('telegram_message.txt', 'w') as f:
+              f.write(outputs['telegram'])
+          
+          with open('s2_8_report.json', 'w') as f:
+              f.write(outputs['s2_8'])
+          
+          print("Reports generated successfully")
+          print(f"Week: {metrics.week_start} - {metrics.week_end}")
+          SCRIPT
+      
+      - name: Upload S2-8 Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: s2-8-weekly-report
+          path: s2_8_report.json
+          retention-days: 90
+      
+      - name: Store outputs
+        id: outputs
+        run: |
+          echo "telegram<<EOF" >> $GITHUB_OUTPUT
+          cat telegram_message.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "s2_8<<EOF" >> $GITHUB_OUTPUT
+          cat s2_8_report.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  send-telegram:
+    name: "📱 Send Telegram Scoreboard"
+    runs-on: ubuntu-latest
+    needs: generate-reports
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Send to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MESSAGE: ${{ needs.generate-reports.outputs.telegram_message }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram credentials not configured - skipping"
+            exit 0
+          fi
+          
+          # Send message via Telegram Bot API
+          curl -s -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${MESSAGE}" \
+            -d "parse_mode=Markdown" \
+            -d "disable_web_page_preview=true"
+          
+          echo "Telegram notification sent"
+
+  upload-to-dashboard:
+    name: "📈 Upload to Dashboard"
+    runs-on: ubuntu-latest
+    needs: generate-reports
+    
+    steps:
+      - name: Upload S2-8 to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          REPORT: ${{ needs.generate-reports.outputs.s2_8_report }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "Supabase credentials not configured - skipping"
+            exit 0
+          fi
+          
+          # Upload to weekly_reports table
+          curl -s -X POST \
+            "${SUPABASE_URL}/rest/v1/weekly_reports" \
+            -H "apikey: ${SUPABASE_SERVICE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_KEY}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d "${REPORT}"
+          
+          echo "Report uploaded to dashboard"

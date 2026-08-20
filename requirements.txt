@@ -1,0 +1,12 @@
+# Trading Desk - Dependencies
+# ==========================
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# No runtime dependencies required yet
+# (stdlib only for core modules)
+
+# Note: worldmonitor.app is consumed via API
+# Do NOT add worldmonitor as a dependency (AGPL)

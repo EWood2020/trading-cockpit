@@ -1,0 +1,154 @@
+# Devil's Advocate Workflow
+# ========================
+# 
+# Mandato único: argumentar EN CONTRA de cada PR de estrategia.
+# Usa Gemini (DEVIL_API_KEY) para generar críticas constructivas.
+#
+# Propósito: Evitar groupthink y confirmation bias en decisiones de trading.
+# El abogado del diablo SIEMPRE argumenta en contra, independientemente de
+# la calidad de la propuesta.
+
+name: Devil's Advocate
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    paths:
+      - 'src/executor/**'
+      - 'src/researcher/**'
+      - 'docs/LAB_*.md'
+      - 'strategies/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  devils-advocate:
+    name: "👿 Argue Against This PR"
+    runs-on: ubuntu-latest
+    if: |
+      !github.event.pull_request.draft &&
+      (
+        contains(github.event.pull_request.labels.*.name, 'strategy') ||
+        contains(github.event.pull_request.title, 'LAB_') ||
+        contains(github.event.pull_request.title, 'executor') ||
+        contains(github.event.pull_request.title, 'researcher')
+      )
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get PR diff
+        id: diff
+        run: |
+          # Get the diff for context
+          git diff origin/${{ github.base_ref }}...origin/${{ github.head_ref }} > pr_diff.txt
+          
+          # Get changed files
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }}
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Generate Devil's Advocate Critique
+        id: critique
+        env:
+          DEVIL_API_KEY: ${{ secrets.DEVIL_API_KEY }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Read the diff
+          DIFF_CONTENT=$(cat pr_diff.txt | head -c 10000)
+          
+          # Create the prompt for Gemini
+          cat > prompt.json << 'PROMPT_EOF'
+          {
+            "contents": [{
+              "parts": [{
+                "text": "Eres el ABOGADO DEL DIABLO de un equipo de trading. Tu ÚNICO mandato es argumentar EN CONTRA de la propuesta que te presenten. No importa qué tan buena parezca la idea - tu trabajo es encontrar las debilidades, riesgos, y razones por las que podría fallar.\n\nNORMAS:\n1. SIEMPRE argumenta en contra, nunca a favor\n2. Sé específico y técnico en tus críticas\n3. Menciona riesgos de mercado, de implementación, y de comportamiento\n4. Pregunta qué podría salir mal que no se haya considerado\n5. Cuestiona los supuestos implícitos\n6. Sé constructivo pero implacable\n7. Máximo 400 palabras\n8. Responde en español\n\nPR Title: ${PR_TITLE}\n\nPR Description:\n${PR_BODY}\n\nCódigo modificado (extracto):\n${DIFF_CONTENT}\n\nGenera tu crítica como Abogado del Diablo:"
+              }]
+            }],
+            "generationConfig": {
+              "temperature": 0.7,
+              "maxOutputTokens": 800
+            }
+          }
+          PROMPT_EOF
+          
+          # Replace placeholders
+          sed -i "s|\${PR_TITLE}|${PR_TITLE}|g" prompt.json
+          sed -i "s|\${PR_BODY}|$(echo "$PR_BODY" | tr '\n' ' ' | sed 's/"/\\"/g')|g" prompt.json
+          sed -i "s|\${DIFF_CONTENT}|$(echo "$DIFF_CONTENT" | tr '\n' ' ' | head -c 3000 | sed 's/"/\\"/g')|g" prompt.json
+          
+          # Call Gemini API
+          RESPONSE=$(curl -s -X POST \
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${DEVIL_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @prompt.json)
+          
+          # Extract the critique text
+          CRITIQUE=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "Error: No se pudo generar la crítica"')
+          
+          # Save for next step
+          echo "critique<<EOF" >> $GITHUB_OUTPUT
+          echo "$CRITIQUE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Post Devil's Advocate Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const critique = `${{ steps.critique.outputs.critique }}`;
+            
+            const body = `## 👿 Abogado del Diablo
+            
+            > _Mi único mandato es argumentar EN CONTRA. No es personal, es protocolo._
+            
+            ${critique}
+            
+            ---
+            
+            <details>
+            <summary>ℹ️ Sobre este comentario</summary>
+            
+            Este comentario es generado automáticamente por el workflow Devil's Advocate.
+            Su propósito es identificar debilidades potenciales antes de mergear.
+            
+            **Responder a la crítica es OBLIGATORIO** antes de aprobar el PR.
+            Si la crítica no aplica, explica por qué.
+            
+            _Powered by Gemini · [docs](../../docs/DEVILS_ADVOCATE.md)_
+            </details>`;
+            
+            // Check if we already commented on this PR
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const existingComment = comments.data.find(c => 
+              c.user.type === 'Bot' && 
+              c.body.includes('👿 Abogado del Diablo')
+            );
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body + `\n\n_Actualizado: ${new Date().toISOString()}_`
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
