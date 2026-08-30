@@ -1,111 +1,178 @@
 <!DOCTYPE html>
-<script type="application/json" id="cowork-artifact-meta">
-{
-  "name": "Desk Mission Control",
-  "schemaVersion": 1,
-  "description": "One-screen desk overview: paper book vs S&P 500 equity curves, KPIs (alpha, hit rate, shadow book, pipeline health, AI cost), and all open positions across books — live from Supabase.",
-  "mcpTools": [],
-  "mcpServerNames": []
-}
-</script>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trading Desk — Mission Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <style>
-  :root { color-scheme: light;
-    --bg:#fafaf8; --card:#fff; --border:#e6e4df; --text:#1a1a18; --muted:#8a877f;
-    --green:#1a7f4e; --red:#b3382c; --amber:#9a6700; --blue:#3a5fa8;
-  }
-  * { box-sizing:border-box; margin:0; }
-  body { background:var(--bg); color:var(--text); font:14px/1.5 -apple-system,"Segoe UI",sans-serif; padding:20px; max-width:1100px; margin:0 auto; }
-  h1 { font-size:19px; font-weight:700; }
-  .sub { color:var(--muted); font-size:12px; margin:2px 0 14px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
-  .kpi { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
-  .kpi .k { font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-  .kpi .v { font-size:21px; font-weight:700; margin-top:3px; }
-  .kpi .d { font-size:11px; color:var(--muted); margin-top:1px; }
-  .good { color:var(--green); } .bad { color:var(--red); } .warn { color:var(--amber); }
-  .panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:14px; }
-  .panel h2 { font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
-  .panel .why { font-size:12px; color:var(--muted); margin-bottom:10px; }
-  .chartbox { height:250px; position:relative; }
-  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
-  th { text-align:left; font-size:10px; text-transform:uppercase; color:var(--muted); padding:7px 8px; border-bottom:1px solid var(--border); }
-  td { padding:8px; border-bottom:1px solid var(--border); vertical-align:top; }
-  tr:last-child td { border-bottom:none; }
-  .chip { display:inline-block; border-radius:10px; padding:1px 9px; font-size:11px; font-weight:600; }
-  .chip.g { background:#e5f3ec; color:var(--green); } .chip.r { background:#f7e8e6; color:var(--red); }
-  .chip.n { background:#f0efeb; color:var(--muted); } .chip.a { background:#fdf3e0; color:var(--amber); }
-  .bookname { font-weight:700; } .bookdesc { font-size:11px; color:var(--muted); }
-  .gate { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed var(--border); font-size:13px; }
-  .gate:last-child { border-bottom:none; }
-  .gate .val { margin-left:auto; font-variant-numeric:tabular-nums; font-weight:600; }
-  ol.steps { margin-left:18px; font-size:13px; } ol.steps li { margin:5px 0; }
-  ol.steps b { font-weight:650; }
-  #status { color:var(--muted); text-align:center; padding:30px; }
-  .err { color:var(--red); background:#f7e8e6; border-radius:8px; padding:10px 14px; }
-  .foot { margin-top:16px; font-size:11px; color:var(--muted); }
+  html, body { margin: 0; padding: 0; background: #04060a; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(74,216,230,.25); }
+  @keyframes pulseDot { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+  @keyframes sweep { 0% { transform: translateX(-100%) } 100% { transform: translateX(300%) } }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .good { color: #46e0a0; }
+  .bad { color: #f07a6a; }
+  .warn { color: #d8b04a; }
+  .muted { color: #7d8f9c; }
+  .chip { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; padding: 4px 10px; border: 1px solid; }
+  .chip.g { border-color: rgba(70,224,160,.4); color: #46e0a0; }
+  .chip.r { border-color: rgba(240,122,106,.4); color: #f07a6a; }
+  .chip.a { border-color: rgba(216,176,74,.45); color: #d8b04a; }
+  .chip.n { border-color: rgba(120,190,220,.3); color: #7d8f9c; }
+  #status { text-align: center; padding: 80px 40px; color: #7d8f9c; font-family: 'IBM Plex Mono', monospace; }
+  .err { color: #f07a6a; background: rgba(240,122,106,.08); border: 1px solid rgba(240,122,106,.3); padding: 14px 18px; max-width: 600px; margin: 0 auto; }
+  .chartbox { height: 340px; position: relative; }
+  .health { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 </style>
 </head>
 <body>
-  <h1>Trading Desk — Mission Control</h1>
-  <div class="sub">Everything live from the database on open · benchmark: S&amp;P 500 · all money is simulated until the gates pass · short-window P&amp;L is mostly noise — verdicts only at reviews</div>
-  <div id="status">loading…</div>
-  <div id="main" style="display:none">
+<div id="status">cargando datos…</div>
+<div id="main" style="display:none;min-height:100vh;background:
+  radial-gradient(1200px 600px at 15% -10%, rgba(74,216,230,.07), transparent 60%),
+  radial-gradient(900px 500px at 95% 5%, rgba(216,176,74,.05), transparent 60%),
+  #04060a;background-attachment:fixed;font-family:'Chakra Petch',system-ui,sans-serif;color:#e8f0f5;padding:0 0 72px">
 
-    <div class="grid" id="kpis"></div>
-
-    <div class="panel">
-      <h2>The race — who grows 10,000€ best since Jul 14</h2>
-      <div class="why">Three ways of deciding trades, same market. The dashed grey line is "do nothing, buy the index" — every strategy must beat it to deserve real money.</div>
-      <div class="chartbox"><canvas id="eq"></canvas></div>
+  <div style="position:relative;overflow:hidden;border-bottom:1px solid rgba(120,190,220,.14);background:rgba(6,10,15,.72);backdrop-filter:blur(8px)">
+    <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;padding:26px 40px 20px;max-width:1760px;margin:0 auto">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="width:9px;height:9px;background:#4ad8e6;box-shadow:0 0 12px #4ad8e6;animation:pulseDot 2.4s infinite"></div>
+          <span class="mono" style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#4ad8e6">Desk online · feed nominal</span>
+          <span class="mono" style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#4d5c68">benchmark s&amp;p 500</span>
+        </div>
+        <h1 style="margin:0;font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1">
+          Trading Desk <span style="color:#4d5c68">/</span> <span style="color:#7d8f9c;font-weight:400">Mission Control</span>
+        </h1>
+        <p style="margin:0;max-width:760px;font-size:14px;line-height:1.6;color:#7d8f9c">
+          Todo en vivo desde la base de datos al abrir. Dinero simulado hasta que pasen las puertas de validación. El P&amp;L de ventana corta es casi todo ruido: veredictos solo en las revisiones.
+        </p>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="border:1px solid rgba(216,176,74,.45);background:rgba(216,176,74,.08);padding:10px 16px;display:flex;flex-direction:column;gap:2px">
+          <span class="mono" style="font-size:9px;letter-spacing:.3em;color:#8a7a4a">modo</span>
+          <span class="mono" style="font-size:18px;font-weight:600;letter-spacing:.1em;color:#d8b04a">PAPER</span>
+        </div>
+        <div style="border:1px solid rgba(120,190,220,.16);padding:10px 16px;display:flex;flex-direction:column;gap:2px">
+          <span class="mono" style="font-size:9px;letter-spacing:.3em;color:#4d5c68">sesión</span>
+          <span id="clock" class="mono" style="font-size:18px;font-weight:500;letter-spacing:.08em;color:#e8f0f5">--:--:--</span>
+        </div>
+      </div>
     </div>
-
-    <div class="panel">
-      <h2>Strategy report — how each book earns (or loses)</h2>
-      <div class="why">Closed trades only — open positions can still change their mind. Expectancy = average €/trade after fees; positive over many trades is the whole game.</div>
-      <div id="report"></div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(74,216,230,.5),transparent);position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;width:20%;background:linear-gradient(90deg,transparent,#4ad8e6,transparent);animation:sweep 6s linear infinite"></div>
     </div>
-
-    <div class="panel">
-      <h2>Validation gates — what must be true before 500–2,000€ goes live (Aug 25)</h2>
-      <div class="why">Agreed on Jul 29. The best book must pass ALL of these. Until then: paper only.</div>
-      <div id="gates"></div>
-    </div>
-
-    <div class="panel">
-      <h2>Guardian — the desk's view on assets you actually own</h2>
-      <div class="why">Your real Renta4/Coinbase positions are never traded by the system — but it watches them and holds an opinion with explicit triggers.</div>
-      <div id="guardian"></div>
-    </div>
-
-    <div class="panel">
-      <h2>Open simulated positions</h2>
-      <div id="pos"></div>
-    </div>
-
-    <div class="panel">
-      <h2>Next steps</h2>
-      <ol class="steps">
-        <li><b>Now → Aug 15:</b> books race; you read two Telegrams a day; no parameter changes (freeze).</li>
-        <li><b>Aug 15:</b> congress book verdict — prove a copied-trade signal or get slimmed to a news feed.</li>
-        <li><b>Aug 25 — round-2 review:</b> cull to max 2 books · v3 stops (ATR floors + breakeven step) · screener for new-stock discovery · gate check above.</li>
-        <li><b>If gates pass:</b> live module built and reviewed → 50–150€ real test under trailing floors → weeks later, 500–2,000€ tier.</li>
-        <li><b>Always:</b> real wealth timeline is 1–3 years; the edge is behavior + calibration + patience, proven in that order.</li>
-      </ol>
-    </div>
-
   </div>
-  <div class="foot">Judgment = AI analyst picks · Mechanical = SMA/RSI rules, no opinion · Congress = copy top-ranked politicians' disclosed trades · Not financial advice.</div>
+
+  <div style="max-width:1760px;margin:0 auto;padding:28px 40px 0;display:flex;flex-direction:column;gap:28px">
+
+    <div id="health" class="health"></div>
+
+    <div id="kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(120,190,220,.14);border:1px solid rgba(120,190,220,.14)"></div>
+
+    <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
+      <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">La carrera <span style="color:#4d5c68">·</span> <span style="color:#7d8f9c;font-weight:400">quién hace crecer mejor 10.000 € desde el 14 jul</span></h2>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">Tres formas de decidir operaciones, el mismo mercado. La línea gris discontinua es «no hacer nada, comprar el índice».</p>
+        </div>
+        <div style="display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase">
+          <span style="display:flex;align-items:center;gap:7px;color:#4ad8e6"><i style="width:16px;height:2px;background:#4ad8e6;display:block"></i>judgment</span>
+          <span style="display:flex;align-items:center;gap:7px;color:#d8b04a"><i style="width:16px;height:2px;background:#d8b04a;display:block"></i>mechanical</span>
+          <span style="display:flex;align-items:center;gap:7px;color:#e39bd0"><i style="width:16px;height:2px;background:#e39bd0;display:block"></i>congress</span>
+          <span style="display:flex;align-items:center;gap:7px;color:#7d8f9c"><i style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7d8f9c 0 4px,transparent 4px 8px);display:block"></i>índice</span>
+        </div>
+      </div>
+      <div style="padding:20px 24px 8px">
+        <div class="chartbox"><canvas id="eq"></canvas></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
+      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
+        <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+          <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Informe de estrategia <span style="color:#7d8f9c;font-weight:400">· cómo gana (o pierde) cada libro</span></h2>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">Solo operaciones cerradas. Expectancy = € medios por operación después de comisiones.</p>
+        </div>
+        <div id="report"></div>
+      </div>
+      <div style="border:1px solid rgba(216,176,74,.28);background:linear-gradient(180deg,rgba(216,176,74,.05),#070b11 40%)">
+        <div style="padding:18px 24px;border-bottom:1px solid rgba(216,176,74,.18);display:flex;flex-direction:column;gap:6px">
+          <span class="mono" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#d8b04a">GATE_A_v2 · firmado 20-ago-2026</span>
+          <h2 style="margin:0;font-size:20px;font-weight:600">Tres tests antes de dinero real</h2>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">El P&amp;L de la ventana de papel <strong style="color:#e8f0f5;font-weight:600">no es criterio de ningún test</strong> — se reporta con su banda ±2σ y no decide nada.</p>
+        </div>
+        <div id="gates" style="display:flex;flex-direction:column;font-size:13px;line-height:1.5">
+          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
+            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#4ad8e6;display:block;margin-bottom:8px">T1 · VALIDACIÓN (backtest OOS)</b>
+            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
+              <li>T1.1 Sharpe OOS &gt; 0 en ≥60 % folds anuales y agregado &gt; 0</li>
+              <li>T1.2 Sharpe OOS ≥ equal-weight del universo + 0,15</li>
+              <li>T1.3 maxDD OOS ≤ 1,25 × maxDD del equal-weight</li>
+              <li>T1.4 Robustez ±50 % parámetros — ≥2/3 variantes dentro del 30 % del base</li>
+              <li>T1.5 Turnover y exposición media documentados (contrato para T3)</li>
+            </ul>
+          </div>
+          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
+            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#d8b04a;display:block;margin-bottom:8px">T2 · OPERACIÓN (60 días papel, ~20 oct)</b>
+            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
+              <li>T2.1 ≥58/60 runs diarios limpios por CI · 0 intervenciones manuales</li>
+              <li>T2.2 0 discrepancias en replay audit semanal</li>
+              <li>T2.3 Guardarrailes: 0 falsos positivos/negativos auditados</li>
+              <li>T2.4 Datos verificados · rechazos resueltos en ≤72 h</li>
+            </ul>
+          </div>
+          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
+            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#e39bd0;display:block;margin-bottom:8px">T3 · FIDELIDAD (papel vs contrato T1)</b>
+            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
+              <li>T3.1 Turnover papel dentro de ±50 % del esperado (T1.5)</li>
+              <li>T3.2 Exposición media dentro de ±15 pp de la esperada</li>
+              <li>T3.3 Tamaños de operación consistentes con el backtest</li>
+              <li>T3.4 Divergencia papel-vs-simulación diaria = 0 (mismo código y datos)</li>
+            </ul>
+          </div>
+          <div style="padding:14px 24px;color:#7d8f9c;font-size:12px">
+            Los tres PASAN → Gate B (Kraken micro) → Gate C (€500 con breakers). Cualquier FAIL → diagnóstico; arreglo de estrategia reinicia T2/T3.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="guardian-wrap" style="border:1px solid rgba(120,190,220,.14);background:#070b11;display:none">
+      <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+        <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Guardian <span style="color:#7d8f9c;font-weight:400">· la opinión de la mesa sobre lo que sí tienes</span></h2>
+        <p style="margin:0;font-size:13px;color:#7d8f9c">Tus posiciones reales de Renta4/Coinbase nunca se operan desde el sistema: se vigilan y se opina con disparadores explícitos.</p>
+      </div>
+      <div id="guardian" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(120,190,220,.1)"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
+      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+          <h2 style="margin:0;font-size:20px;font-weight:600">Posiciones simuladas abiertas</h2>
+          <span id="pos-meta" class="mono" style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#4d5c68"></span>
+        </div>
+        <div id="pos"></div>
+      </div>
+      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11;padding:22px 24px">
+        <h2 style="margin:0 0 4px;font-size:20px;font-weight:600">Próximos pasos</h2>
+        <p style="margin:0 0 20px;font-size:13px;color:#7d8f9c">Roadmap viva desde <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">steps.json</code> — se actualiza al cerrar issues con label <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">roadmap</code>.</p>
+        <div id="roadmap" style="display:flex;flex-direction:column;gap:0"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:8px;border-top:1px solid rgba(120,190,220,.1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#4d5c68;flex-wrap:wrap">
+      <span>judgment = picks de analista ia · mechanical = reglas sma/rsi, sin opinión · congress = copia de operaciones declaradas</span>
+      <span style="color:#3d4a54">no es asesoramiento financiero</span>
+    </div>
+  </div>
+</div>
 
 <script>
-// Data layer: Supabase REST de solo lectura. La clave es la "publishable"
-// (publica por diseno); solo puede leer las vistas dash_* creadas para este
-// dashboard — las tablas del desk siguen cerradas por RLS.
 const SB = "https://ldyguhmnqcjutsqmrixr.supabase.co/rest/v1/";
 const KEY = "sb_publishable_C_jvO9jbSMKcFYJjJTsocg_5tR51sei";
 async function get(path) {
@@ -117,76 +184,156 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 const BOOKS = {
-  judgment:  { icon: "🧠", label: "Judgment", desc: "Claude analysts write theses; buys only bullish ≥0.55 conviction" },
-  mechanical:{ icon: "⚙️", label: "Mechanical", desc: "SMA10/30 trend + RSI filter — pure rules, zero opinion" },
-  congress:  { icon: "🏛", label: "Congress copy", desc: "Copies disclosed trades of top-ranked politicians (45-day lag included)" },
+  judgment:  { color: "#4ad8e6", label: "Judgment", tag: "book 01 · judgment" },
+  mechanical:{ color: "#d8b04a", label: "Mechanical", tag: "book 02 · mechanical" },
+  congress:  { color: "#e39bd0", label: "Congress", tag: "book 03 · congress" },
 };
 
-async function load() {
+function fmtEur(v) {
+  const n = Number(v);
+  const s = n.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return s.replace(/\s/g, ".") + " €";
+}
+function fmtPct(v) {
+  const sign = v >= 0 ? "+" : "−";
+  return sign + Math.abs(v).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " %";
+}
+function fmtPp(v) {
+  const sign = v >= 0 ? "+" : "−";
+  return sign + Math.abs(v).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " pp";
+}
+function cls(v) { return v >= 0 ? "good" : "bad"; }
+
+function healthChip(kind, ageHours, lastStatus) {
+  let chipCls = "g", label = kind + ": hace " + Math.round(ageHours) + "h";
+  if (lastStatus === "error" || ageHours == null) {
+    chipCls = "r"; label = kind + ": no corrió ayer";
+  } else if (ageHours >= 36) {
+    chipCls = "r"; label = kind + ": no corrió ayer";
+  } else if (ageHours >= 26) {
+    chipCls = "a";
+  }
+  return `<span class="chip ${chipCls}">${esc(label)}</span>`;
+}
+
+function kpiCard(tag, color, equity, retPct, alphaPp, barPct, dashed) {
+  const barBg = dashed ? "repeating-linear-gradient(90deg,#4d5c68 0 6px,transparent 6px 12px)" : color;
+  const barTrack = dashed ? "transparent" : color + "26";
+  const eqDisplay = fmtEur(equity).replace(" €", '<span style="font-size:18px;color:#4d5c68"> €</span>');
+  return `<div style="background:#070b11;padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+    <span class="mono" style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:${color}">${tag}</span>
+    <span style="font-size:38px;font-weight:600;letter-spacing:-.02em;font-family:'IBM Plex Mono',monospace;color:${dashed ? '#7d8f9c' : '#e8f0f5'}">${eqDisplay}</span>
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span class="mono ${cls(retPct)}" style="font-size:15px;font-weight:600">${fmtPct(retPct)}</span>
+      <span class="mono muted" style="font-size:11px">${dashed ? "línea a batir" : "vs índice " + fmtPp(alphaPp)}</span>
+    </div>
+    <div style="height:2px;background:${barTrack || 'rgba(120,190,220,.15)'}"><div style="height:2px;width:${barPct}%;background:${barBg};${dashed ? '' : 'box-shadow:0 0 10px ' + color + '99'}"></div></div>
+  </div>`;
+}
+
+
+function fmtRoadmapDate(iso) {
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" }).replace(".", "");
+}
+
+function renderRoadmap(steps) {
+  const el = document.getElementById("roadmap");
+  if (!steps.length) {
+    el.innerHTML = '<p class="muted" style="margin:0;font-size:14px">Sin hitos publicados.</p>';
+    return;
+  }
+  const sorted = [...steps].sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const activeIdx = sorted.findIndex(s => s.estado === "activo");
+  el.innerHTML = sorted.map((s, i) => {
+    const isActive = i === activeIdx;
+    const isDone = s.estado === "hecho";
+    const border = isActive ? "rgba(74,216,230,.3)" : "rgba(120,190,220,.14)";
+    const dot = isActive
+      ? '<span style="position:absolute;left:-5px;top:4px;width:9px;height:9px;background:#4ad8e6;box-shadow:0 0 10px #4ad8e6"></span>'
+      : '<span style="position:absolute;left:-4px;top:5px;width:7px;height:7px;background:#0b1118;border:1px solid #4d5c68"></span>';
+    const labelColor = isActive ? "#4ad8e6" : isDone ? "#46e0a0" : "#7d8f9c";
+    const textColor = isActive ? "#c3d2da" : isDone ? "#7d8f9c" : "#a9b8c2";
+    const estadoTag = isDone ? " · hecho" : s.estado === "activo" ? " · ahora" : "";
+    return `<div style="display:grid;gap:18px;padding-bottom:${i < sorted.length - 1 ? "20px" : "0"};border-left:1px solid ${border};margin-left:7px;padding-left:22px;position:relative">
+      ${dot}
+      <span><b class="mono" style="font-size:11px;letter-spacing:.2em;color:${labelColor};display:block;margin-bottom:5px;text-transform:uppercase">${fmtRoadmapDate(s.fecha)}${estadoTag}</b><span style="font-size:14px;color:${textColor};line-height:1.55">${esc(s.titulo)}</span></span>
+    </div>`;
+  }).join("");
+}
+
+async function loadRoadmap() {
   try {
-    const [paper, mechEq, shadowEq, spy, closedAll, agg, posAll, theses] = await Promise.all([
+    const r = await fetch("steps.json", { cache: "no-cache" });
+    if (!r.ok) throw new Error("steps.json unavailable");
+    renderRoadmap(await r.json());
+  } catch {
+    document.getElementById("roadmap").innerHTML =
+      '<p class="muted" style="margin:0;font-size:14px">Roadmap no cargada — falta steps.json junto al index.</p>';
+  }
+}
+
+function reportHeader() {
+  return `<div style="display:grid;grid-template-columns:1.3fr repeat(5,1fr);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68;padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+    <span>libro</span><span style="text-align:right">cerradas</span><span style="text-align:right">acierto</span><span style="text-align:right">expectancy</span><span style="text-align:right">profit factor</span><span style="text-align:right">max dd</span>
+  </div>`;
+}
+function reportRow(name, color, closed, winRate, exp, pf, dd) {
+  const expCls = exp != null && exp >= 0 ? "good" : "bad";
+  const expStr = exp != null ? (exp >= 0 ? "+" : "−") + Math.abs(exp).toLocaleString("es-ES", {minimumFractionDigits:2,maximumFractionDigits:2}) + " €" : "–";
+  const pfStr = pf != null ? pf.toLocaleString("es-ES", {minimumFractionDigits:2,maximumFractionDigits:2}) : "–";
+  const wrStr = closed ? winRate.toLocaleString("es-ES", {minimumFractionDigits:1,maximumFractionDigits:1}) + " %" : "–";
+  return `<div style="display:grid;grid-template-columns:1.3fr repeat(5,1fr);align-items:center;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.06);font-family:'IBM Plex Mono',monospace;font-size:15px">
+    <span style="display:flex;align-items:center;gap:10px;font-family:'Chakra Petch',sans-serif;font-size:15px;font-weight:600"><i style="width:3px;height:22px;background:${color};display:block;box-shadow:0 0 8px ${color}"></i>${BOOKS[name].label}</span>
+    <span style="text-align:right">${closed}</span><span style="text-align:right">${wrStr}</span>
+    <span style="text-align:right" class="${expCls}">${expStr}</span><span style="text-align:right">${pfStr}</span>
+    <span style="text-align:right bad">−${dd.toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1})} %</span>
+  </div>`;
+}
+
+setInterval(() => {
+  const d = new Date();
+  document.getElementById("clock").textContent =
+    [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, "0")).join(":");
+}, 1000);
+
+async function load() {
+  loadRoadmap();
+  try {
+    const [paper, mechEq, shadowEq, spy, closedAll, posAll, theses, healthRows] = await Promise.all([
       get("dash_equity?book=eq.judgment&select=as_of,equity&order=as_of"),
       get("dash_equity?book=eq.mechanical&select=as_of,equity&order=as_of"),
       get("dash_equity?book=eq.congress&select=as_of,equity&order=as_of"),
       get("dash_spy?select=date,close&order=date"),
       get("dash_closed?select=book,symbol,pnl_eur,exit_date,exit_reason"),
-      get("dash_agg?select=*"),
       get("dash_open?select=book,symbol,entry_price,entry_date"),
       get("dash_guardian?select=symbol,title,confidence&order=symbol"),
+      get("dash_health?select=kind,age_hours,last_status&order=kind"),
     ]);
 
-    const a = agg[0] || {};
+    document.getElementById("health").innerHTML =
+      '<span class="chip n">🩺 SALUD</span>' +
+      healthRows.map(h => healthChip(h.kind, h.age_hours, h.last_status)).join("");
+
     const last = arr => arr.length ? Number(arr[arr.length - 1].equity) : 10000;
     const pe = last(paper), me = last(mechEq), se = last(shadowEq);
     const spy0 = spy.length ? Number(spy[0].close) : null;
     const spyNow = spy.length ? Number(spy[spy.length - 1].close) : null;
+    const spyEquity = spy0 ? 10000 * spyNow / spy0 : 10000;
     const spyRet = spy0 ? (spyNow / spy0 - 1) * 100 : 0;
     const ret = v => (v / 10000 - 1) * 100;
-    const combined = pe + me + se;
-    const prevOf = arr => arr.length > 1 ? Number(arr[arr.length - 2].equity)
-                        : (arr.length ? Number(arr[arr.length - 1].equity) : 10000);
-    const pd = pe - prevOf(paper), md = me - prevOf(mechEq), sd = se - prevOf(shadowEq);
-    const dayTot = pd + md + sd;
-    const curDD = arr => {
-      const xs = arr.map(x => Number(x.equity));
-      if (!xs.length) return 0;
-      const peak = Math.max(...xs);
-      return peak > 0 ? (peak - xs[xs.length - 1]) / peak * 100 : 0;
-    };
-    const ddBooks = [["\ud83e\udde0 Judgment", curDD(paper)], ["\u2699\ufe0f Mechanical", curDD(mechEq)], ["\ud83c\udfdb Congress", curDD(shadowEq)]];
-    const worstDD = ddBooks.reduce((a, b) => (b[1] > a[1] ? b : a));
-    const eur = v => v.toLocaleString(undefined, {maximumFractionDigits: 0}) + "\u20ac";
-    const sgn = v => (v >= 0 ? "+" : "\u2212") + Math.abs(v).toFixed(0) + "\u20ac";
-    const cls = v => v >= 0 ? "good" : "bad";
+    const rets = { judgment: ret(pe), mechanical: ret(me), congress: ret(se) };
+    const maxRet = Math.max(...Object.values(rets), spyRet, 0.01);
+    const barW = r => Math.min(100, Math.max(8, (r / maxRet) * 100));
 
-    document.getElementById("kpis").innerHTML = `
-      <div class="kpi"><div class="k">All books combined</div>
-        <div class="v ${cls(combined - 30000)}">${eur(combined)}</div>
-        <div class="d">${sgn(combined - 30000)} total \u00b7 of 30,000\u20ac simulated</div></div>
-      <div class="kpi"><div class="k">Day P&amp;L (all books)</div>
-        <div class="v ${cls(dayTot)}">${sgn(dayTot)}</div>
-        <div class="d">\ud83e\udde0 ${sgn(pd)} \u00b7 \u2699\ufe0f ${sgn(md)} \u00b7 \ud83c\udfdb ${sgn(sd)}</div></div>
-      <div class="kpi"><div class="k">\ud83e\udde0 Judgment</div>
-        <div class="v ${cls(pe - 10000)}">${eur(pe)}</div>
-        <div class="d">${sgn(pd)} today \u00b7 ${ret(pe).toFixed(2)}% \u00b7 ${ret(pe) > spyRet ? "beating" : "behind"} S&amp;P (${spyRet.toFixed(2)}%)</div></div>
-      <div class="kpi"><div class="k">\u2699\ufe0f Mechanical</div>
-        <div class="v ${cls(me - 10000)}">${eur(me)}</div>
-        <div class="d">${sgn(md)} today \u00b7 ${ret(me).toFixed(2)}% \u00b7 ${ret(me) > spyRet ? "beating" : "behind"} S&amp;P</div></div>
-      <div class="kpi"><div class="k">\ud83c\udfdb Congress</div>
-        <div class="v ${cls(se - 10000)}">${eur(se)}</div>
-        <div class="d">${sgn(sd)} today \u00b7 ${ret(se).toFixed(2)}% \u00b7 ${ret(se) > spyRet ? "beating" : "behind"} S&amp;P</div></div>
-      <div class="kpi"><div class="k">Drawdown from peak</div>
-        <div class="v ${worstDD[1] > 10 ? "bad" : worstDD[1] > 5 ? "warn" : "good"}">${worstDD[1].toFixed(1)}%</div>
-        <div class="d">worst book: ${worstDD[0]} \u00b7 kill review at 15%</div></div>
-      <div class="kpi"><div class="k">Pipeline today</div>
-        <div class="v ${a.errors > 0 ? "bad" : "good"}">${a.errors > 0 ? a.errors + " \u26a0\ufe0f" : "\u2705"}</div>
-        <div class="d">${a.modules || 0} modules ran</div></div>
-      <div class="kpi"><div class="k">Total AI cost</div><div class="v">$${a.cost ?? "0"}</div>
-        <div class="d">since Jul 14</div></div>`;
+    document.getElementById("kpis").innerHTML =
+      kpiCard(BOOKS.judgment.tag, BOOKS.judgment.color, pe, rets.judgment, rets.judgment - spyRet, barW(rets.judgment), false) +
+      kpiCard(BOOKS.mechanical.tag, BOOKS.mechanical.color, me, rets.mechanical, rets.mechanical - spyRet, barW(rets.mechanical), false) +
+      kpiCard(BOOKS.congress.tag, BOOKS.congress.color, se, rets.congress, rets.congress - spyRet, barW(rets.congress), false) +
+      kpiCard("índice · hacer nada", "#7d8f9c", spyEquity, spyRet, 0, barW(spyRet), true);
 
-    // equity race
     const labels = paper.map(p => p.as_of);
-    const align = (rows) => labels.map(d => {
+    const align = rows => labels.map(d => {
       const m = rows.find(x => x.as_of === d);
       return m ? Number(m.equity) : null;
     });
@@ -196,81 +343,89 @@ async function load() {
       if (spyByDate[d]) lastSpy = spyByDate[d];
       return spy0 ? 10000 * lastSpy / spy0 : null;
     });
+
+    Chart.defaults.color = "#4d5c68";
+    Chart.defaults.borderColor = "rgba(120,190,220,.08)";
     new Chart(document.getElementById("eq"), {
       type: "line",
       data: { labels, datasets: [
-        { label: "🧠 Judgment", data: align(paper), borderColor: "#1a7f4e", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
-        { label: "⚙️ Mechanical", data: align(mechEq), borderColor: "#3a5fa8", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
-        { label: "🏛 Congress", data: align(shadowEq), borderColor: "#9a6700", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
-        { label: "S&P 500 (do nothing)", data: spySeries, borderColor: "#8a877f", borderDash: [5, 4], borderWidth: 1.5, tension: .25, pointRadius: 0 },
+        { label: "Judgment", data: align(paper), borderColor: "#4ad8e6", backgroundColor: "rgba(74,216,230,.12)", fill: true, borderWidth: 2.5, tension: .25, pointRadius: 0, spanGaps: true },
+        { label: "Mechanical", data: align(mechEq), borderColor: "#d8b04a", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
+        { label: "Congress", data: align(shadowEq), borderColor: "#e39bd0", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
+        { label: "S&P 500", data: spySeries, borderColor: "#7d8f9c", borderDash: [7, 6], borderWidth: 1.5, tension: .25, pointRadius: 0 },
       ]},
-      options: { responsive: true, maintainAspectRatio: false, animation: false,
-        plugins: { legend: { position: "top", labels: { boxWidth: 14, font: { size: 11 } } } } },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { maxTicksLimit: 8, font: { family: "'IBM Plex Mono'" } }, grid: { color: "rgba(120,190,220,.06)" } },
+          y: { ticks: { font: { family: "'IBM Plex Mono'" }, callback: v => v.toLocaleString("es-ES") + " €" }, grid: { color: "rgba(120,190,220,.08)" } },
+        },
+      },
     });
 
-    // strategy report
     const curveOf = { judgment: paper, mechanical: mechEq, congress: shadowEq };
     const maxDD = curve => {
       let peak = -Infinity, dd = 0;
-      curve.forEach(v => { peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak * 100); });
+      curve.forEach(x => { const v = Number(x.equity); peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak * 100); });
       return dd;
     };
-    const rows = Object.keys(BOOKS).map(name => {
+    const stats = Object.keys(BOOKS).map(name => {
       const closed = closedAll.filter(c => c.book === name && c.pnl_eur != null).map(c => Number(c.pnl_eur));
       const wins = closed.filter(x => x > 0);
-      const exp = closed.length ? closed.reduce((x, y) => x + y, 0) / closed.length : null;
-      const eqv = last(curveOf[name]);
-      const dd = maxDD(curveOf[name].map(x => Number(x.equity)));
-      const alpha = ret(eqv) - spyRet;
-      return { name, eqv, dd, closed: closed.length, wins: wins.length, exp, alpha };
+      const losses = closed.filter(x => x <= 0);
+      const exp = closed.length ? closed.reduce((a, b) => a + b, 0) / closed.length : null;
+      const sumW = wins.reduce((a, b) => a + b, 0);
+      const sumL = Math.abs(losses.reduce((a, b) => a + b, 0));
+      const pf = sumL > 0 ? sumW / sumL : (sumW > 0 ? null : null);
+      const dd = maxDD(curveOf[name]);
+      const alpha = ret(last(curveOf[name])) - spyRet;
+      return { name, closed: closed.length, wins: wins.length, exp, pf, dd, alpha };
     });
-    document.getElementById("report").innerHTML = `<table>
-      <tr><th>Book</th><th>Equity</th><th>vs S&P</th><th>Max drop</th><th>Trades done</th><th>Won</th><th>Expectancy</th><th>Verdict so far</th></tr>` +
-      rows.map(b => {
-        const bk = BOOKS[b.name];
-        const verdict = b.closed === 0 && b.eqv === 10000 ? `<span class="chip n">waiting</span>` :
-          b.alpha > 0 ? `<span class="chip g">beating index</span>` : `<span class="chip r">behind index</span>`;
-        return `<tr>
-        <td><div class="bookname">${bk.icon} ${bk.label}</div><div class="bookdesc">${bk.desc}</div></td>
-        <td class="${b.eqv >= 10000 ? "good" : "bad"}">${b.eqv.toLocaleString(undefined,{maximumFractionDigits:0})}€</td>
-        <td class="${b.alpha >= 0 ? "good" : "bad"}">${b.alpha >= 0 ? "+" : ""}${b.alpha.toFixed(2)}pp</td>
-        <td>${b.dd.toFixed(1)}%</td><td>${b.closed}</td>
-        <td>${b.closed ? b.wins + "/" + b.closed : "–"}</td>
-        <td class="${(b.exp ?? 0) >= 0 ? "good" : "bad"}">${b.exp != null ? (b.exp >= 0 ? "+" : "") + b.exp.toFixed(2) + "€/trade" : "–"}</td>
-        <td>${verdict}</td></tr>`;
-      }).join("") + "</table>";
 
-    // gates
-    const best = rows.reduce((x, y) => (y.alpha > x.alpha ? y : x));
-    const totTrades = best.closed;
-    const calib = a.hi_n > 0 ? a.hi_correct / a.hi_n * 100 : null;
-    const gate = (ok, label, val) =>
-      `<div class="gate">${ok === null ? "⏳" : ok ? "✅" : "❌"} <span>${label}</span><span class="val">${val}</span></div>`;
-    document.getElementById("gates").innerHTML =
-      gate(totTrades >= 15 ? true : null, "≥15 closed trades on the best book (" + BOOKS[best.name].label + ")", totTrades + " / 15") +
-      gate(best.exp == null ? null : best.exp > 0, "Positive expectancy per trade", best.exp != null ? best.exp.toFixed(2) + "€" : "–") +
-      gate(best.alpha > 0, "Alpha over S&P 500 for the round", (best.alpha >= 0 ? "+" : "") + best.alpha.toFixed(2) + "pp") +
-      gate(best.dd < 5, "Max drawdown under 5%", best.dd.toFixed(1) + "%") +
-      gate(calib == null ? null : calib >= 65, "High-confidence calls (≥0.55) still ≥65% accurate", calib != null ? calib.toFixed(0) + "% of " + a.hi_n : "–");
+    document.getElementById("report").innerHTML = reportHeader() +
+      stats.map(s => reportRow(s.name, BOOKS[s.name].color, s.closed,
+        s.closed ? s.wins / s.closed * 100 : 0, s.exp, s.pf, s.dd)).join("");
 
-    // guardian
-    document.getElementById("guardian").innerHTML = theses.length ? `<table>
-      <tr><th>You own</th><th>Desk stance</th><th>Current thesis</th></tr>` +
-      theses.map(t => {
+    if (theses.length) {
+      document.getElementById("guardian-wrap").style.display = "block";
+      document.getElementById("guardian").innerHTML = theses.map(t => {
         const stance = (t.title.match(/^\[(\w+)/) || [])[1] || "neutral";
-        const cls = stance === "bullish" ? "g" : stance === "bearish" ? "r" : "n";
-        return `<tr><td class="bookname">${esc(t.symbol)}</td>
-          <td><span class="chip ${cls}">${esc(stance)} ${t.confidence ?? ""}</span></td>
-          <td style="font-size:12px">${esc(t.title.replace(/^\[\w+\]\s*/, "").slice(0, 130))}</td></tr>`;
-      }).join("") + "</table>" : "<div class='bookdesc'>no theses on owned assets</div>";
+        const stanceColor = stance === "bullish" ? "#46e0a0" : stance === "bearish" ? "#f07a6a" : "#7d8f9c";
+        const thesis = esc(t.title.replace(/^\[\w+\]\s*/, "").slice(0, 160));
+        const conf = t.confidence != null && t.confidence !== ""
+          ? Number(t.confidence).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          : "–";
+        return `<div style="background:#070b11;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+            <span style="font-size:18px;font-weight:600;letter-spacing:.02em">${esc(t.symbol)}</span>
+            <span class="mono" style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;border:1px solid ${stanceColor}66;color:${stanceColor};padding:4px 9px">${esc(stance)} · conf ${conf}</span>
+          </div>
+          <p style="margin:0;font-size:13px;color:#7d8f9c;line-height:1.55">${thesis}</p>
+        </div>`;
+      }).join("");
+    }
 
-    // positions
-    document.getElementById("pos").innerHTML = posAll.length ? `<table>
-      <tr><th>Book</th><th>Symbol</th><th>Entry</th><th>Since</th></tr>` +
-      posAll.map(p => `<tr><td>${BOOKS[p.book].icon} ${BOOKS[p.book].label}</td>
-        <td class="bookname">${esc(p.symbol)}</td><td>${Number(p.entry_price).toFixed(2)}</td>
-        <td>${esc(p.entry_date)}</td></tr>`).join("") + "</table>"
-      : "<div class='bookdesc'>all books in cash — quiet is a position too</div>";
+    document.getElementById("pos-meta").textContent =
+      posAll.length ? posAll.length + " activas" : "0 activas · en cash";
+    if (posAll.length) {
+      document.getElementById("pos").innerHTML =
+        `<div style="display:grid;grid-template-columns:1fr .9fr .8fr .8fr;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68;padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+          <span>ticker</span><span>libro</span><span style="text-align:right">entrada</span><span style="text-align:right">desde</span>
+        </div>` +
+        posAll.map(p => {
+          const bk = BOOKS[p.book] || { color: "#7d8f9c", label: p.book };
+          return `<div style="display:grid;grid-template-columns:1fr .9fr .8fr .8fr;align-items:center;padding:15px 24px;border-bottom:1px solid rgba(120,190,220,.06);font-family:'IBM Plex Mono',monospace;font-size:14px">
+            <span style="font-weight:600;letter-spacing:.04em">${esc(p.symbol)}</span>
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:${bk.color}">${bk.label.toLowerCase()}</span>
+            <span style="text-align:right;color:#7d8f9c">${Number(p.entry_price).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+            <span style="text-align:right;color:#7d8f9c">${esc(p.entry_date)}</span>
+          </div>`;
+        }).join("");
+    } else {
+      document.getElementById("pos").innerHTML =
+        '<p style="padding:24px;margin:0;font-size:14px;color:#7d8f9c">Todos los libros en cash — el silencio también es posición.</p>';
+    }
 
     document.getElementById("status").style.display = "none";
     document.getElementById("main").style.display = "block";
