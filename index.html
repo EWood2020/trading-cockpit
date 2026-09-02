@@ -24,6 +24,7 @@
   .chip.r { border-color: rgba(240,122,106,.4); color: #f07a6a; }
   .chip.a { border-color: rgba(216,176,74,.45); color: #d8b04a; }
   .chip.n { border-color: rgba(120,190,220,.3); color: #7d8f9c; }
+  .chip.adv { border-color: rgba(255,122,69,.55); color: #ff7a45; }
   #status { text-align: center; padding: 80px 40px; color: #7d8f9c; font-family: 'IBM Plex Mono', monospace; }
   .err { color: #f07a6a; background: rgba(240,122,106,.08); border: 1px solid rgba(240,122,106,.3); padding: 14px 18px; max-width: 600px; margin: 0 auto; }
   .chartbox { height: 340px; position: relative; }
@@ -72,18 +73,19 @@
 
     <div id="health" class="health"></div>
 
-    <div id="kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(120,190,220,.14);border:1px solid rgba(120,190,220,.14)"></div>
+    <div id="kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(120,190,220,.14);border:1px solid rgba(120,190,220,.14)"></div>
 
     <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
       <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
         <div style="display:flex;flex-direction:column;gap:5px">
           <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">La carrera <span style="color:#4d5c68">·</span> <span style="color:#7d8f9c;font-weight:400">quién hace crecer mejor 10.000 € desde el 14 jul</span></h2>
-          <p style="margin:0;font-size:13px;color:#7d8f9c">Tres formas de decidir operaciones, el mismo mercado. La línea gris discontinua es «no hacer nada, comprar el índice».</p>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">Tres libros de la casa más Maverick en advisory (no entra al torneo hasta el CEO). La línea gris discontinua es «no hacer nada, comprar el índice».</p>
         </div>
         <div style="display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase">
           <span style="display:flex;align-items:center;gap:7px;color:#4ad8e6"><i style="width:16px;height:2px;background:#4ad8e6;display:block"></i>judgment</span>
           <span style="display:flex;align-items:center;gap:7px;color:#d8b04a"><i style="width:16px;height:2px;background:#d8b04a;display:block"></i>mechanical</span>
           <span style="display:flex;align-items:center;gap:7px;color:#e39bd0"><i style="width:16px;height:2px;background:#e39bd0;display:block"></i>congress</span>
+          <span style="display:flex;align-items:center;gap:7px;color:#ff7a45"><i style="width:16px;height:2px;background:#ff7a45;display:block"></i>maverick</span>
           <span style="display:flex;align-items:center;gap:7px;color:#7d8f9c"><i style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7d8f9c 0 4px,transparent 4px 8px);display:block"></i>índice</span>
         </div>
       </div>
@@ -142,6 +144,14 @@
       </div>
     </div>
 
+    <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
+      <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+        <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Sala de gestores <span style="color:#7d8f9c;font-weight:400">· por qué está cada posición</span></h2>
+        <p style="margin:0;font-size:13px;color:#7d8f9c">Solo el torneo de papel. El porqué sale de tesis, reglas, filings o el racional de Maverick — no de cuentas reales.</p>
+      </div>
+      <div id="sala" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;background:rgba(120,190,220,.1)"></div>
+    </div>
+
     <div id="guardian-wrap" style="border:1px solid rgba(120,190,220,.14);background:#070b11;display:none">
       <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
         <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Guardian <span style="color:#7d8f9c;font-weight:400">· la opinión de la mesa sobre lo que sí tienes</span></h2>
@@ -152,11 +162,11 @@
 
     <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
       <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-          <h2 style="margin:0;font-size:20px;font-weight:600">Posiciones simuladas abiertas</h2>
-          <span id="pos-meta" class="mono" style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#4d5c68"></span>
+        <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+          <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">En el taller <span style="color:#7d8f9c;font-weight:400">· sprint y PRs abiertos</span></h2>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">Export sanitizado <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">work.json</code> (05:15). El espejo de GitHub no se lee con la clave pública.</p>
         </div>
-        <div id="pos"></div>
+        <div id="taller"></div>
       </div>
       <div style="border:1px solid rgba(120,190,220,.14);background:#070b11;padding:22px 24px">
         <h2 style="margin:0 0 4px;font-size:20px;font-weight:600">Próximos pasos</h2>
@@ -166,7 +176,7 @@
     </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:8px;border-top:1px solid rgba(120,190,220,.1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#4d5c68;flex-wrap:wrap">
-      <span>judgment = picks de analista ia · mechanical = reglas sma/rsi, sin opinión · congress = copia de operaciones declaradas</span>
+      <span>judgment = picks de analista ia · mechanical = reglas sma/rsi · congress = copia de filings · maverick = gestor llm advisory</span>
       <span style="color:#3d4a54">no es asesoramiento financiero</span>
     </div>
   </div>
@@ -187,7 +197,9 @@ const BOOKS = {
   judgment:  { color: "#4ad8e6", label: "Judgment", tag: "book 01 · judgment" },
   mechanical:{ color: "#d8b04a", label: "Mechanical", tag: "book 02 · mechanical" },
   congress:  { color: "#e39bd0", label: "Congress", tag: "book 03 · congress" },
+  maverick:  { color: "#ff7a45", label: "Maverick", tag: "advisory · maverick" },
 };
+const MANAGER_ORDER = ["judgment", "mechanical", "congress", "maverick"];
 
 function fmtEur(v) {
   const n = Number(v);
@@ -216,16 +228,17 @@ function healthChip(kind, ageHours, lastStatus) {
   return `<span class="chip ${chipCls}">${esc(label)}</span>`;
 }
 
-function kpiCard(tag, color, equity, retPct, alphaPp, barPct, dashed) {
+function kpiCard(tag, color, equity, retPct, alphaPp, barPct, dashed, vsLabel) {
   const barBg = dashed ? "repeating-linear-gradient(90deg,#4d5c68 0 6px,transparent 6px 12px)" : color;
   const barTrack = dashed ? "transparent" : color + "26";
   const eqDisplay = fmtEur(equity).replace(" €", '<span style="font-size:18px;color:#4d5c68"> €</span>');
+  const vs = dashed ? "línea a batir" : (vsLabel || "vs índice ") + fmtPp(alphaPp);
   return `<div style="background:#070b11;padding:22px 24px;display:flex;flex-direction:column;gap:12px">
     <span class="mono" style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:${color}">${tag}</span>
     <span style="font-size:38px;font-weight:600;letter-spacing:-.02em;font-family:'IBM Plex Mono',monospace;color:${dashed ? '#7d8f9c' : '#e8f0f5'}">${eqDisplay}</span>
     <div style="display:flex;align-items:baseline;gap:10px">
       <span class="mono ${cls(retPct)}" style="font-size:15px;font-weight:600">${fmtPct(retPct)}</span>
-      <span class="mono muted" style="font-size:11px">${dashed ? "línea a batir" : "vs índice " + fmtPp(alphaPp)}</span>
+      <span class="mono muted" style="font-size:11px">${vs}</span>
     </div>
     <div style="height:2px;background:${barTrack || 'rgba(120,190,220,.15)'}"><div style="height:2px;width:${barPct}%;background:${barBg};${dashed ? '' : 'box-shadow:0 0 10px ' + color + '99'}"></div></div>
   </div>`;
@@ -273,6 +286,93 @@ async function loadRoadmap() {
   }
 }
 
+async function loadWork() {
+  try {
+    const r = await fetch("work.json", { cache: "no-cache" });
+    if (!r.ok) throw new Error("work.json unavailable");
+    renderTaller(await r.json());
+  } catch {
+    document.getElementById("taller").innerHTML =
+      '<p class="muted" style="padding:18px 24px;margin:0;font-size:14px">Taller vacío — falta work.json (sale del sync 05:15).</p>';
+  }
+}
+
+function renderTaller(work) {
+  const el = document.getElementById("taller");
+  const issues = work.issues || [];
+  const prs = work.prs || [];
+  if (!issues.length && !prs.length) {
+    el.innerHTML = '<p class="muted" style="padding:18px 24px;margin:0;font-size:14px">Nada abierto en el sprint.</p>';
+    return;
+  }
+  const sprint = work.sprint ? esc(work.sprint) : "sprint";
+  const row = (kind, item) => {
+    const st = (item.estado || "open").toLowerCase();
+    const chip = st === "open" ? "a" : st === "merged" || st === "closed" ? "n" : "n";
+    return `<div style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:12px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
+      <span class="mono" style="font-size:11px;color:#4d5c68">${esc(kind)} #${esc(item.number)}</span>
+      <span style="font-size:14px;color:#c3d2da">${esc(item.title)}</span>
+      <span class="chip ${chip}" style="letter-spacing:.12em">${esc(item.label || st)} · ${esc(item.repo || "")}</span>
+    </div>`;
+  };
+  el.innerHTML =
+    `<div class="mono" style="padding:12px 24px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68">${sprint}${work.as_of ? " · " + esc(work.as_of) : ""}</div>` +
+    issues.map(i => row("issue", i)).join("") +
+    prs.map(p => row("pr", p)).join("");
+}
+
+function renderSala(openRows, decisions, maverickStats) {
+  const el = document.getElementById("sala");
+  const byBook = {};
+  MANAGER_ORDER.forEach(b => { byBook[b] = { pos: [], dec: [] }; });
+  (openRows || []).forEach(p => { if (byBook[p.book]) byBook[p.book].pos.push(p); });
+  (decisions || []).forEach(d => { if (byBook[d.book]) byBook[d.book].dec.push(d); });
+  const kr = maverickStats && maverickStats.n
+    ? `${Math.round(Number(maverickStats.kill_rate) * 100)} % (${maverickStats.kills}/${maverickStats.n})`
+    : "n/a";
+  el.innerHTML = MANAGER_ORDER.map(name => {
+    const bk = BOOKS[name];
+    const pos = byBook[name].pos;
+    const dec = byBook[name].dec.slice(0, 5);
+    const badge = name === "maverick"
+      ? `<span class="chip adv">ADVISORY — 30 días de prueba</span>
+         <span class="mono muted" style="font-size:10px;letter-spacing:.14em">fiscal kill-rate ${esc(kr)}</span>`
+      : "";
+    const posHtml = pos.length
+      ? pos.map(p => {
+          const pnl = p.pnl_pct == null ? null : Number(p.pnl_pct);
+          const pnlStr = pnl == null ? "—" : fmtPct(pnl);
+          const why = esc((p.why || "").slice(0, 180));
+          const detail = p.detail ? `<span class="mono muted" style="font-size:10px">${esc(p.detail)}</span>` : "";
+          return `<div style="padding:12px 0;border-bottom:1px solid rgba(120,190,220,.08)">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">
+              <span style="font-weight:600;letter-spacing:.04em">${esc(p.symbol)}</span>
+              <span class="mono ${pnl == null ? "muted" : cls(pnl)}" style="font-size:12px">${pnlStr}</span>
+            </div>
+            <div class="mono muted" style="font-size:10px;margin-top:4px">entrada ${Number(p.entry_price).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})} · ${esc(p.entry_date)}</div>
+            <p style="margin:6px 0 0;font-size:13px;color:#a9b8c2;line-height:1.45">${why} ${detail}</p>
+          </div>`;
+        }).join("")
+      : '<p class="muted" style="margin:12px 0 0;font-size:13px">En caja.</p>';
+    const decHtml = dec.length
+      ? `<div class="mono muted" style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;margin:16px 0 8px">últimas decisiones</div>` +
+        dec.map(d => `<div style="font-size:12px;color:#7d8f9c;padding:4px 0;border-bottom:1px solid rgba(120,190,220,.05)">
+          <span class="mono" style="font-size:10px;color:#4d5c68">${esc(d.as_of)}</span>
+          · ${esc((d.reason || "").slice(0, 140))}
+          ${d.detail ? " · " + esc(d.detail) : ""}
+        </div>`).join("")
+      : "";
+    return `<div style="background:#070b11;padding:20px 22px;display:flex;flex-direction:column;gap:8px;min-height:280px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <span style="font-size:18px;font-weight:600;color:${bk.color}">${bk.label}</span>
+        ${badge}
+      </div>
+      ${posHtml}
+      ${decHtml}
+    </div>`;
+  }).join("");
+}
+
 function reportHeader() {
   return `<div style="display:grid;grid-template-columns:1.3fr repeat(5,1fr);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68;padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
     <span>libro</span><span style="text-align:right">cerradas</span><span style="text-align:right">acierto</span><span style="text-align:right">expectancy</span><span style="text-align:right">profit factor</span><span style="text-align:right">max dd</span>
@@ -299,37 +399,66 @@ setInterval(() => {
 
 async function load() {
   loadRoadmap();
+  loadWork();
   try {
-    const [paper, mechEq, shadowEq, spy, closedAll, posAll, theses, healthRows] = await Promise.all([
+    const [paper, mechEq, shadowEq, spy, closedAll, theses, healthRows] = await Promise.all([
       get("dash_equity?book=eq.judgment&select=as_of,equity&order=as_of"),
       get("dash_equity?book=eq.mechanical&select=as_of,equity&order=as_of"),
       get("dash_equity?book=eq.congress&select=as_of,equity&order=as_of"),
       get("dash_spy?select=date,close&order=date"),
       get("dash_closed?select=book,symbol,pnl_eur,exit_date,exit_reason"),
-      get("dash_open?select=book,symbol,entry_price,entry_date"),
       get("dash_guardian?select=symbol,title,confidence&order=symbol"),
       get("dash_health?select=kind,age_hours,last_status&order=kind"),
     ]);
+    let dpmEq = [];
+    try {
+      dpmEq = await get("dash_equity?book=eq.maverick&select=as_of,equity,ew_equity&order=as_of");
+    } catch {
+      try { dpmEq = await get("dash_equity?book=eq.maverick&select=as_of,equity&order=as_of"); }
+      catch { dpmEq = []; }
+    }
+    let openDetail = [];
+    try { openDetail = await get("dash_open_detail?select=book,symbol,entry_price,entry_date,last_close,pnl_pct,why,detail,survived"); }
+    catch {
+      try {
+        const fallback = await get("dash_open?select=book,symbol,entry_price,entry_date");
+        openDetail = fallback;
+      } catch { openDetail = []; }
+    }
+    let decisions = [];
+    try { decisions = await get("dash_decisions?select=book,as_of,reason,detail,survived&order=as_of.desc"); }
+    catch { decisions = []; }
+    let maverickStats = { kills: 0, n: 0, kill_rate: null };
+    try {
+      const rows = await get("dash_maverick_stats?select=kills,n,kill_rate");
+      if (rows && rows[0]) maverickStats = rows[0];
+    } catch { /* SQL 011 pending */ }
 
     document.getElementById("health").innerHTML =
       '<span class="chip n">🩺 SALUD</span>' +
       healthRows.map(h => healthChip(h.kind, h.age_hours, h.last_status)).join("");
 
     const last = arr => arr.length ? Number(arr[arr.length - 1].equity) : 10000;
-    const pe = last(paper), me = last(mechEq), se = last(shadowEq);
+    const pe = last(paper), me = last(mechEq), se = last(shadowEq), de = last(dpmEq);
     const spy0 = spy.length ? Number(spy[0].close) : null;
     const spyNow = spy.length ? Number(spy[spy.length - 1].close) : null;
     const spyEquity = spy0 ? 10000 * spyNow / spy0 : 10000;
     const spyRet = spy0 ? (spyNow / spy0 - 1) * 100 : 0;
     const ret = v => (v / 10000 - 1) * 100;
-    const rets = { judgment: ret(pe), mechanical: ret(me), congress: ret(se) };
-    const maxRet = Math.max(...Object.values(rets), spyRet, 0.01);
+    const dpmEw = dpmEq.length && dpmEq[dpmEq.length - 1].ew_equity != null
+      ? Number(dpmEq[dpmEq.length - 1].ew_equity) : 10000;
+    const rets = { judgment: ret(pe), mechanical: ret(me), congress: ret(se), maverick: ret(de) };
+    const maxRet = Math.max(...Object.values(rets), spyRet, ret(dpmEw), 0.01);
     const barW = r => Math.min(100, Math.max(8, (r / maxRet) * 100));
 
+    const krLabel = maverickStats && maverickStats.n
+      ? `vs EW · fiscal kill ${Math.round(Number(maverickStats.kill_rate) * 100)}% `
+      : "vs EW ";
     document.getElementById("kpis").innerHTML =
       kpiCard(BOOKS.judgment.tag, BOOKS.judgment.color, pe, rets.judgment, rets.judgment - spyRet, barW(rets.judgment), false) +
       kpiCard(BOOKS.mechanical.tag, BOOKS.mechanical.color, me, rets.mechanical, rets.mechanical - spyRet, barW(rets.mechanical), false) +
       kpiCard(BOOKS.congress.tag, BOOKS.congress.color, se, rets.congress, rets.congress - spyRet, barW(rets.congress), false) +
+      kpiCard(BOOKS.maverick.tag, BOOKS.maverick.color, de, rets.maverick, rets.maverick - ret(dpmEw), barW(rets.maverick), false, krLabel) +
       kpiCard("índice · hacer nada", "#7d8f9c", spyEquity, spyRet, 0, barW(spyRet), true);
 
     const labels = paper.map(p => p.as_of);
@@ -352,6 +481,7 @@ async function load() {
         { label: "Judgment", data: align(paper), borderColor: "#4ad8e6", backgroundColor: "rgba(74,216,230,.12)", fill: true, borderWidth: 2.5, tension: .25, pointRadius: 0, spanGaps: true },
         { label: "Mechanical", data: align(mechEq), borderColor: "#d8b04a", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
         { label: "Congress", data: align(shadowEq), borderColor: "#e39bd0", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
+        { label: "Maverick", data: align(dpmEq), borderColor: "#ff7a45", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
         { label: "S&P 500", data: spySeries, borderColor: "#7d8f9c", borderDash: [7, 6], borderWidth: 1.5, tension: .25, pointRadius: 0 },
       ]},
       options: {
@@ -364,7 +494,7 @@ async function load() {
       },
     });
 
-    const curveOf = { judgment: paper, mechanical: mechEq, congress: shadowEq };
+    const curveOf = { judgment: paper, mechanical: mechEq, congress: shadowEq, maverick: dpmEq };
     const maxDD = curve => {
       let peak = -Infinity, dd = 0;
       curve.forEach(x => { const v = Number(x.equity); peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak * 100); });
@@ -387,6 +517,8 @@ async function load() {
       stats.map(s => reportRow(s.name, BOOKS[s.name].color, s.closed,
         s.closed ? s.wins / s.closed * 100 : 0, s.exp, s.pf, s.dd)).join("");
 
+    renderSala(openDetail, decisions, maverickStats);
+
     if (theses.length) {
       document.getElementById("guardian-wrap").style.display = "block";
       document.getElementById("guardian").innerHTML = theses.map(t => {
@@ -404,27 +536,6 @@ async function load() {
           <p style="margin:0;font-size:13px;color:#7d8f9c;line-height:1.55">${thesis}</p>
         </div>`;
       }).join("");
-    }
-
-    document.getElementById("pos-meta").textContent =
-      posAll.length ? posAll.length + " activas" : "0 activas · en cash";
-    if (posAll.length) {
-      document.getElementById("pos").innerHTML =
-        `<div style="display:grid;grid-template-columns:1fr .9fr .8fr .8fr;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68;padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-          <span>ticker</span><span>libro</span><span style="text-align:right">entrada</span><span style="text-align:right">desde</span>
-        </div>` +
-        posAll.map(p => {
-          const bk = BOOKS[p.book] || { color: "#7d8f9c", label: p.book };
-          return `<div style="display:grid;grid-template-columns:1fr .9fr .8fr .8fr;align-items:center;padding:15px 24px;border-bottom:1px solid rgba(120,190,220,.06);font-family:'IBM Plex Mono',monospace;font-size:14px">
-            <span style="font-weight:600;letter-spacing:.04em">${esc(p.symbol)}</span>
-            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:${bk.color}">${bk.label.toLowerCase()}</span>
-            <span style="text-align:right;color:#7d8f9c">${Number(p.entry_price).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
-            <span style="text-align:right;color:#7d8f9c">${esc(p.entry_date)}</span>
-          </div>`;
-        }).join("");
-    } else {
-      document.getElementById("pos").innerHTML =
-        '<p style="padding:24px;margin:0;font-size:14px;color:#7d8f9c">Todos los libros en cash — el silencio también es posición.</p>';
     }
 
     document.getElementById("status").style.display = "none";
