@@ -78,13 +78,11 @@
     <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
       <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
         <div style="display:flex;flex-direction:column;gap:5px">
-          <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">La carrera <span style="color:#4d5c68">·</span> <span style="color:#7d8f9c;font-weight:400">quién hace crecer mejor 10.000 € desde el 14 jul</span></h2>
-          <p style="margin:0;font-size:13px;color:#7d8f9c">Tres libros de la casa más Maverick en advisory (no entra al torneo hasta el CEO). La línea gris discontinua es «no hacer nada, comprar el índice».</p>
+          <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">La carrera <span style="color:#4d5c68">·</span> <span id="race-sub" style="color:#7d8f9c;font-weight:400">quién hace crecer mejor 10.000 €</span></h2>
+          <p style="margin:0;font-size:13px;color:#7d8f9c">Mechanical (reglas) y Maverick (DeepSeek, advisory). Judgment y Congress se retiraron el 28-sep. La línea gris discontinua es «no hacer nada, comprar el índice».</p>
         </div>
         <div style="display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase">
-          <span style="display:flex;align-items:center;gap:7px;color:#4ad8e6"><i style="width:16px;height:2px;background:#4ad8e6;display:block"></i>judgment</span>
           <span style="display:flex;align-items:center;gap:7px;color:#d8b04a"><i style="width:16px;height:2px;background:#d8b04a;display:block"></i>mechanical</span>
-          <span style="display:flex;align-items:center;gap:7px;color:#e39bd0"><i style="width:16px;height:2px;background:#e39bd0;display:block"></i>congress</span>
           <span style="display:flex;align-items:center;gap:7px;color:#ff7a45"><i style="width:16px;height:2px;background:#ff7a45;display:block"></i>maverick</span>
           <span style="display:flex;align-items:center;gap:7px;color:#7d8f9c"><i style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7d8f9c 0 4px,transparent 4px 8px);display:block"></i>índice</span>
         </div>
@@ -147,17 +145,9 @@
     <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
       <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
         <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Sala de gestores <span style="color:#7d8f9c;font-weight:400">· por qué está cada posición</span></h2>
-        <p style="margin:0;font-size:13px;color:#7d8f9c">Solo el torneo de papel. El porqué sale de tesis, reglas, filings o el racional de Maverick — no de cuentas reales.</p>
+        <p style="margin:0;font-size:13px;color:#7d8f9c">Solo libros de papel. El porqué sale de las reglas de Mechanical o del racional de Maverick — no de cuentas reales.</p>
       </div>
       <div id="sala" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;background:rgba(120,190,220,.1)"></div>
-    </div>
-
-    <div id="guardian-wrap" style="border:1px solid rgba(120,190,220,.14);background:#070b11;display:none">
-      <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-        <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Guardian <span style="color:#7d8f9c;font-weight:400">· la opinión de la mesa sobre lo que sí tienes</span></h2>
-        <p style="margin:0;font-size:13px;color:#7d8f9c">Tus posiciones reales de Renta4/Coinbase nunca se operan desde el sistema: se vigilan y se opina con disparadores explícitos.</p>
-      </div>
-      <div id="guardian" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(120,190,220,.1)"></div>
     </div>
 
     <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
@@ -176,7 +166,7 @@
     </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:8px;border-top:1px solid rgba(120,190,220,.1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#4d5c68;flex-wrap:wrap">
-      <span>judgment = picks de analista ia · mechanical = reglas sma/rsi · congress = copia de filings · maverick = gestor llm advisory</span>
+      <span>mechanical = reglas sma/rsi · maverick = gestor deepseek advisory</span>
       <span style="color:#3d4a54">no es asesoramiento financiero</span>
     </div>
   </div>
@@ -193,13 +183,21 @@ async function get(path) {
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+// Tras la limpieza del 28-sep (trading-researcher#95) solo quedan estos dos libros.
+// Las tablas de Judgment y Congress siguen en la base como archivo, pero el cockpit no las lee.
 const BOOKS = {
-  judgment:  { color: "#4ad8e6", label: "Judgment", tag: "book 01 · judgment" },
-  mechanical:{ color: "#d8b04a", label: "Mechanical", tag: "book 02 · mechanical" },
-  congress:  { color: "#e39bd0", label: "Congress", tag: "book 03 · congress" },
+  mechanical:{ color: "#d8b04a", label: "Mechanical", tag: "book · mechanical" },
   maverick:  { color: "#ff7a45", label: "Maverick", tag: "advisory · maverick" },
 };
-const MANAGER_ORDER = ["judgment", "mechanical", "congress", "maverick"];
+const MANAGER_ORDER = ["mechanical", "maverick"];
+
+// Mismo contrato que telegram_digest (#95): verde < umbral del kind, ámbar hasta +10h, rojo después.
+// El backup es semanal (domingos), así que su umbral verde es 8 días, no 26h.
+const HEALTH_GREEN_H = { backup: 8 * 24 };
+const DEFAULT_GREEN_H = 26;
+const HEALTH_LABEL = { daily: "ingest", mech: "mechanical", deepseek_pm: "maverick", stops: "stops", backup: "backup" };
+// El fiscal de judgment_v2 se apagó con #95: sus etiquetas históricas ya no informan de nada.
+const liveDetail = d => !!d && !/^fiscal:/i.test(String(d));
 
 function fmtEur(v) {
   const n = Number(v);
@@ -217,12 +215,17 @@ function fmtPp(v) {
 function cls(v) { return v >= 0 ? "good" : "bad"; }
 
 function healthChip(kind, ageHours, lastStatus) {
-  let chipCls = "g", label = kind + ": hace " + Math.round(ageHours) + "h";
-  if (lastStatus === "error" || ageHours == null) {
-    chipCls = "r"; label = kind + ": no corrió ayer";
-  } else if (ageHours >= 36) {
-    chipCls = "r"; label = kind + ": no corrió ayer";
-  } else if (ageHours >= 26) {
+  const name = HEALTH_LABEL[kind] || kind;
+  const green = HEALTH_GREEN_H[kind] ?? DEFAULT_GREEN_H;
+  if (ageHours == null) return `<span class="chip r">${esc(name + ": sin registro")}</span>`;
+  const age = Number(ageHours);
+  const ageStr = age >= 48 ? Math.round(age / 24) + "d" : Math.round(age) + "h";
+  let chipCls = "g", label = name + ": hace " + ageStr;
+  if (lastStatus === "error") {
+    chipCls = "r"; label = name + ": error hace " + ageStr;
+  } else if (age >= green + 10) {
+    chipCls = "r"; label = name + ": parado, último hace " + ageStr;
+  } else if (age >= green) {
     chipCls = "a";
   }
   return `<span class="chip ${chipCls}">${esc(label)}</span>`;
@@ -321,29 +324,25 @@ function renderTaller(work) {
     prs.map(p => row("pr", p)).join("");
 }
 
-function renderSala(openRows, decisions, maverickStats) {
+function renderSala(openRows, decisions) {
   const el = document.getElementById("sala");
   const byBook = {};
   MANAGER_ORDER.forEach(b => { byBook[b] = { pos: [], dec: [] }; });
   (openRows || []).forEach(p => { if (byBook[p.book]) byBook[p.book].pos.push(p); });
-  (decisions || []).forEach(d => { if (byBook[d.book]) byBook[d.book].dec.push(d); });
-  const kr = maverickStats && maverickStats.n
-    ? `${Math.round(Number(maverickStats.kill_rate) * 100)} % (${maverickStats.kills}/${maverickStats.n})`
-    : "n/a";
+  (decisions || []).forEach(d => { if (byBook[d.book] && (d.reason || "").trim()) byBook[d.book].dec.push(d); });
   el.innerHTML = MANAGER_ORDER.map(name => {
     const bk = BOOKS[name];
     const pos = byBook[name].pos;
     const dec = byBook[name].dec.slice(0, 5);
     const badge = name === "maverick"
-      ? `<span class="chip adv">ADVISORY — 30 días de prueba</span>
-         <span class="mono muted" style="font-size:10px;letter-spacing:.14em">fiscal kill-rate ${esc(kr)}</span>`
+      ? `<span class="chip adv">ADVISORY — papel, sin asignación</span>`
       : "";
     const posHtml = pos.length
       ? pos.map(p => {
           const pnl = p.pnl_pct == null ? null : Number(p.pnl_pct);
           const pnlStr = pnl == null ? "—" : fmtPct(pnl);
           const why = esc((p.why || "").slice(0, 180));
-          const detail = p.detail ? `<span class="mono muted" style="font-size:10px">${esc(p.detail)}</span>` : "";
+          const detail = liveDetail(p.detail) ? `<span class="mono muted" style="font-size:10px">${esc(p.detail)}</span>` : "";
           return `<div style="padding:12px 0;border-bottom:1px solid rgba(120,190,220,.08)">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">
               <span style="font-weight:600;letter-spacing:.04em">${esc(p.symbol)}</span>
@@ -359,7 +358,7 @@ function renderSala(openRows, decisions, maverickStats) {
         dec.map(d => `<div style="font-size:12px;color:#7d8f9c;padding:4px 0;border-bottom:1px solid rgba(120,190,220,.05)">
           <span class="mono" style="font-size:10px;color:#4d5c68">${esc(d.as_of)}</span>
           · ${esc((d.reason || "").slice(0, 140))}
-          ${d.detail ? " · " + esc(d.detail) : ""}
+          ${liveDetail(d.detail) ? " · " + esc(d.detail) : ""}
         </div>`).join("")
       : "";
     return `<div style="background:#070b11;padding:20px 22px;display:flex;flex-direction:column;gap:8px;min-height:280px">
@@ -387,7 +386,7 @@ function reportRow(name, color, closed, winRate, exp, pf, dd) {
     <span style="display:flex;align-items:center;gap:10px;font-family:'Chakra Petch',sans-serif;font-size:15px;font-weight:600"><i style="width:3px;height:22px;background:${color};display:block;box-shadow:0 0 8px ${color}"></i>${BOOKS[name].label}</span>
     <span style="text-align:right">${closed}</span><span style="text-align:right">${wrStr}</span>
     <span style="text-align:right" class="${expCls}">${expStr}</span><span style="text-align:right">${pfStr}</span>
-    <span style="text-align:right bad">−${dd.toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1})} %</span>
+    <span style="text-align:right" class="bad">−${dd.toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1})} %</span>
   </div>`;
 }
 
@@ -401,13 +400,10 @@ async function load() {
   loadRoadmap();
   loadWork();
   try {
-    const [paper, mechEq, shadowEq, spy, closedAll, theses, healthRows] = await Promise.all([
-      get("dash_equity?book=eq.judgment&select=as_of,equity&order=as_of"),
+    const [mechEq, spy, closedAll, healthRows] = await Promise.all([
       get("dash_equity?book=eq.mechanical&select=as_of,equity&order=as_of"),
-      get("dash_equity?book=eq.congress&select=as_of,equity&order=as_of"),
       get("dash_spy?select=date,close&order=date"),
-      get("dash_closed?select=book,symbol,pnl_eur,exit_date,exit_reason"),
-      get("dash_guardian?select=symbol,title,confidence&order=symbol"),
+      get("dash_closed?book=in.(mechanical,maverick)&select=book,symbol,pnl_eur,exit_date,exit_reason"),
       get("dash_health?select=kind,age_hours,last_status&order=kind"),
     ]);
     let dpmEq = [];
@@ -426,42 +422,39 @@ async function load() {
       } catch { openDetail = []; }
     }
     let decisions = [];
-    try { decisions = await get("dash_decisions?select=book,as_of,reason,detail,survived&order=as_of.desc"); }
+    try { decisions = await get("dash_decisions?book=in.(mechanical,maverick)&select=book,as_of,reason,detail,survived&order=as_of.desc"); }
     catch { decisions = []; }
-    let maverickStats = { kills: 0, n: 0, kill_rate: null };
-    try {
-      const rows = await get("dash_maverick_stats?select=kills,n,kill_rate");
-      if (rows && rows[0]) maverickStats = rows[0];
-    } catch { /* SQL 011 pending */ }
 
     document.getElementById("health").innerHTML =
       '<span class="chip n">🩺 SALUD</span>' +
       healthRows.map(h => healthChip(h.kind, h.age_hours, h.last_status)).join("");
 
     const last = arr => arr.length ? Number(arr[arr.length - 1].equity) : 10000;
-    const pe = last(paper), me = last(mechEq), se = last(shadowEq), de = last(dpmEq);
-    const spy0 = spy.length ? Number(spy[0].close) : null;
+    const me = last(mechEq), de = last(dpmEq);
+    // El eje X antes salía de las fechas de Judgment (14 jul); ahora es la unión de los libros vivos.
+    const labels = [...new Set([...mechEq, ...dpmEq].map(p => p.as_of))].sort();
+    // El índice se rebasa al arranque de la carrera: último cierre ANTES de la primera marca
+    // (el libro valía 10.000 € antes de su primera marca, no en ella).
+    const start = labels[0];
+    const spyBase = start ? spy.filter(s => s.date < start).pop() || spy[0] : spy[0];
+    const spy0 = spyBase ? Number(spyBase.close) : null;
     const spyNow = spy.length ? Number(spy[spy.length - 1].close) : null;
     const spyEquity = spy0 ? 10000 * spyNow / spy0 : 10000;
     const spyRet = spy0 ? (spyNow / spy0 - 1) * 100 : 0;
+    if (start) document.getElementById("race-sub").textContent =
+      "quién hace crecer mejor 10.000 € desde el " + fmtRoadmapDate(start);
     const ret = v => (v / 10000 - 1) * 100;
     const dpmEw = dpmEq.length && dpmEq[dpmEq.length - 1].ew_equity != null
       ? Number(dpmEq[dpmEq.length - 1].ew_equity) : 10000;
-    const rets = { judgment: ret(pe), mechanical: ret(me), congress: ret(se), maverick: ret(de) };
+    const rets = { mechanical: ret(me), maverick: ret(de) };
     const maxRet = Math.max(...Object.values(rets), spyRet, ret(dpmEw), 0.01);
     const barW = r => Math.min(100, Math.max(8, (r / maxRet) * 100));
 
-    const krLabel = maverickStats && maverickStats.n
-      ? `vs EW · fiscal kill ${Math.round(Number(maverickStats.kill_rate) * 100)}% `
-      : "vs EW ";
     document.getElementById("kpis").innerHTML =
-      kpiCard(BOOKS.judgment.tag, BOOKS.judgment.color, pe, rets.judgment, rets.judgment - spyRet, barW(rets.judgment), false) +
       kpiCard(BOOKS.mechanical.tag, BOOKS.mechanical.color, me, rets.mechanical, rets.mechanical - spyRet, barW(rets.mechanical), false) +
-      kpiCard(BOOKS.congress.tag, BOOKS.congress.color, se, rets.congress, rets.congress - spyRet, barW(rets.congress), false) +
-      kpiCard(BOOKS.maverick.tag, BOOKS.maverick.color, de, rets.maverick, rets.maverick - ret(dpmEw), barW(rets.maverick), false, krLabel) +
+      kpiCard(BOOKS.maverick.tag, BOOKS.maverick.color, de, rets.maverick, rets.maverick - ret(dpmEw), barW(rets.maverick), false, "vs equal-weight ") +
       kpiCard("índice · hacer nada", "#7d8f9c", spyEquity, spyRet, 0, barW(spyRet), true);
 
-    const labels = paper.map(p => p.as_of);
     const align = rows => labels.map(d => {
       const m = rows.find(x => x.as_of === d);
       return m ? Number(m.equity) : null;
@@ -478,9 +471,7 @@ async function load() {
     new Chart(document.getElementById("eq"), {
       type: "line",
       data: { labels, datasets: [
-        { label: "Judgment", data: align(paper), borderColor: "#4ad8e6", backgroundColor: "rgba(74,216,230,.12)", fill: true, borderWidth: 2.5, tension: .25, pointRadius: 0, spanGaps: true },
-        { label: "Mechanical", data: align(mechEq), borderColor: "#d8b04a", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
-        { label: "Congress", data: align(shadowEq), borderColor: "#e39bd0", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
+        { label: "Mechanical", data: align(mechEq), borderColor: "#d8b04a", backgroundColor: "rgba(216,176,74,.10)", fill: true, borderWidth: 2.5, tension: .25, pointRadius: 0, spanGaps: true },
         { label: "Maverick", data: align(dpmEq), borderColor: "#ff7a45", borderWidth: 2, tension: .25, pointRadius: 0, spanGaps: true },
         { label: "S&P 500", data: spySeries, borderColor: "#7d8f9c", borderDash: [7, 6], borderWidth: 1.5, tension: .25, pointRadius: 0 },
       ]},
@@ -494,7 +485,7 @@ async function load() {
       },
     });
 
-    const curveOf = { judgment: paper, mechanical: mechEq, congress: shadowEq, maverick: dpmEq };
+    const curveOf = { mechanical: mechEq, maverick: dpmEq };
     const maxDD = curve => {
       let peak = -Infinity, dd = 0;
       curve.forEach(x => { const v = Number(x.equity); peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak * 100); });
@@ -517,26 +508,7 @@ async function load() {
       stats.map(s => reportRow(s.name, BOOKS[s.name].color, s.closed,
         s.closed ? s.wins / s.closed * 100 : 0, s.exp, s.pf, s.dd)).join("");
 
-    renderSala(openDetail, decisions, maverickStats);
-
-    if (theses.length) {
-      document.getElementById("guardian-wrap").style.display = "block";
-      document.getElementById("guardian").innerHTML = theses.map(t => {
-        const stance = (t.title.match(/^\[(\w+)/) || [])[1] || "neutral";
-        const stanceColor = stance === "bullish" ? "#46e0a0" : stance === "bearish" ? "#f07a6a" : "#7d8f9c";
-        const thesis = esc(t.title.replace(/^\[\w+\]\s*/, "").slice(0, 160));
-        const conf = t.confidence != null && t.confidence !== ""
-          ? Number(t.confidence).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-          : "–";
-        return `<div style="background:#070b11;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
-            <span style="font-size:18px;font-weight:600;letter-spacing:.02em">${esc(t.symbol)}</span>
-            <span class="mono" style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;border:1px solid ${stanceColor}66;color:${stanceColor};padding:4px 9px">${esc(stance)} · conf ${conf}</span>
-          </div>
-          <p style="margin:0;font-size:13px;color:#7d8f9c;line-height:1.55">${thesis}</p>
-        </div>`;
-      }).join("");
-    }
+    renderSala(openDetail, decisions);
 
     document.getElementById("status").style.display = "none";
     document.getElementById("main").style.display = "block";

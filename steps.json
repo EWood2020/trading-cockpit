@@ -2,22 +2,17 @@
   {
     "fecha": "2026-08-30",
     "titulo": "Freeze de parámetros · libros compitiendo en papel",
-    "estado": "activo"
+    "estado": "hecho"
   },
   {
-    "fecha": "2026-09-12",
-    "titulo": "Veredicto congress — demostrar señal copy-trade o quedar en feed",
-    "estado": "pendiente"
-  },
-  {
-    "fecha": "2026-09-22",
-    "titulo": "Checkpoint proyecto — go/no-go (T1, congress, Judgment, T2, infra)",
-    "estado": "pendiente"
+    "fecha": "2026-09-28",
+    "titulo": "Limpieza: fuera Judgment, Congress y los analistas LLM — quedan Mechanical y Maverick (researcher#95)",
+    "estado": "hecho"
   },
   {
     "fecha": "2026-10-03",
-    "titulo": "Maverick 30d advisory — el CEO decide si entra al torneo",
-    "estado": "pendiente"
+    "titulo": "Maverick 30d advisory — decidir si pasa a selector semanal de Mechanical",
+    "estado": "activo"
   },
   {
     "fecha": "2026-10-20",
