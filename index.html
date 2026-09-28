@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Desk">
 <title>Trading Desk — Mission Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,6 +33,64 @@
   .err { color: #f07a6a; background: rgba(240,122,106,.08); border: 1px solid rgba(240,122,106,.3); padding: 14px 18px; max-width: 600px; margin: 0 auto; }
   .chartbox { height: 340px; position: relative; }
   .health { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .panel { border: 1px solid rgba(120,190,220,.14); background: #070b11; }
+  .panel-head { padding: 18px 24px; border-bottom: 1px solid rgba(120,190,220,.1); }
+  .panel-head h2 { margin: 0 0 5px; font-size: 20px; font-weight: 600; }
+  .panel-head .sub { color: #7d8f9c; font-weight: 400; }
+  .panel-head p { margin: 0; font-size: 13px; line-height: 1.5; color: #7d8f9c; }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(120,190,220,.1); }
+  .twocol > * { background: #070b11; min-width: 0; }
+  .cell { padding: 20px 24px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(120,190,220,.08); border: 1px solid rgba(120,190,220,.08); }
+  .stat { background: #070b11; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .stat span { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: #4d5c68; }
+  .stat b { font-size: 16px; font-weight: 600; }
+  .split { margin-top: 18px; }
+  .split-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #4d5c68; margin-bottom: 8px; }
+  .split-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 13px; color: #a9b8c2; padding: 6px 0; }
+  .split-row i { grid-column: 1 / -1; display: block; height: 3px; opacity: .8; }
+  details.gate { border-top: 1px solid rgba(120,190,220,.08); }
+  details.gate summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 0; font-size: 13px; }
+  details.gate summary::-webkit-details-marker { display: none; }
+  details.gate summary b { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+  details.gate summary > span:not(.chip) { color: #7d8f9c; }
+  details.gate summary::after { content: "+"; font-family: 'IBM Plex Mono', monospace; color: #4d5c68; grid-column: 4; }
+  details.gate[open] summary::after { content: "−"; }
+  details.gate ul { margin: 0 0 12px; padding-left: 18px; color: #a9b8c2; font-size: 13px; line-height: 1.6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+
+  /* iPhone y pantallas estrechas */
+  @media (max-width: 760px) {
+    #main { background-attachment: scroll !important; padding-bottom: 40px !important; }
+    .topbar { grid-template-columns: 1fr !important; padding: 18px 16px 16px !important; gap: 14px !important; }
+    .topbar h1 { font-size: 28px !important; }
+    .topbar p { font-size: 13px !important; }
+    .topbar .badges > div { padding: 6px 12px !important; }
+    .wrap { padding: 16px 16px 0 !important; gap: 16px !important; }
+    #kpis { grid-template-columns: 1fr 1fr !important; }
+    #kpis > div { padding: 14px 14px !important; gap: 8px !important; }
+    #kpis > div > span:nth-child(2) { font-size: 24px !important; }
+    #kpis > div:last-child { grid-column: 1 / -1; }
+    #kpis > div > div:first-of-type { flex-direction: column; align-items: flex-start !important; gap: 2px !important; }
+    #kpis > div > div:first-of-type > span:first-child { white-space: nowrap; }
+    .topbar p, .topbar .hide-sm { display: none !important; }
+    .race-head { grid-template-columns: 1fr !important; padding: 14px 16px !important; gap: 10px !important; }
+    .race-head h2 { font-size: 17px !important; }
+    .legend { gap: 12px; }
+    .chartwrap { padding: 12px 8px 4px !important; }
+    .chartbox { height: 230px; }
+    .panel-head { padding: 14px 16px; }
+    .panel-head h2 { font-size: 17px; }
+    .twocol { grid-template-columns: 1fr; }
+    .cell { padding: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    #sala > div { padding: 16px !important; min-height: 0 !important; }
+    details.gate summary { grid-template-columns: 1fr auto; }
+    details.gate summary > span:not(.chip) { grid-column: 1; grid-row: 2; font-size: 12px; }
+    details.gate summary .chip { grid-column: 2; grid-row: 1; }
+    details.gate summary::after { grid-column: 2; grid-row: 2; justify-self: end; }
+    .foot { flex-direction: column; align-items: flex-start !important; gap: 6px !important; }
+  }
 </style>
 </head>
 <body>
@@ -39,12 +101,12 @@
   #04060a;background-attachment:fixed;font-family:'Chakra Petch',system-ui,sans-serif;color:#e8f0f5;padding:0 0 72px">
 
   <div style="position:relative;overflow:hidden;border-bottom:1px solid rgba(120,190,220,.14);background:rgba(6,10,15,.72);backdrop-filter:blur(8px)">
-    <div style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;padding:26px 40px 20px;max-width:1760px;margin:0 auto">
+    <div class="topbar" style="display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;padding:26px 40px 20px;max-width:1760px;margin:0 auto">
       <div style="display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <div style="width:9px;height:9px;background:#4ad8e6;box-shadow:0 0 12px #4ad8e6;animation:pulseDot 2.4s infinite"></div>
           <span class="mono" style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#4ad8e6">Desk online · feed nominal</span>
-          <span class="mono" style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#4d5c68">benchmark s&amp;p 500</span>
+          <span class="mono hide-sm" style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#4d5c68">benchmark s&amp;p 500</span>
         </div>
         <h1 style="margin:0;font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1">
           Trading Desk <span style="color:#4d5c68">/</span> <span style="color:#7d8f9c;font-weight:400">Mission Control</span>
@@ -53,7 +115,7 @@
           Todo en vivo desde la base de datos al abrir. Dinero simulado hasta que pasen las puertas de validación. El P&amp;L de ventana corta es casi todo ruido: veredictos solo en las revisiones.
         </p>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
+      <div class="badges" style="display:flex;align-items:center;gap:12px">
         <div style="border:1px solid rgba(216,176,74,.45);background:rgba(216,176,74,.08);padding:10px 16px;display:flex;flex-direction:column;gap:2px">
           <span class="mono" style="font-size:9px;letter-spacing:.3em;color:#8a7a4a">modo</span>
           <span class="mono" style="font-size:18px;font-weight:600;letter-spacing:.1em;color:#d8b04a">PAPER</span>
@@ -69,103 +131,85 @@
     </div>
   </div>
 
-  <div style="max-width:1760px;margin:0 auto;padding:28px 40px 0;display:flex;flex-direction:column;gap:28px">
+  <div class="wrap" style="max-width:1760px;margin:0 auto;padding:28px 40px 0;display:flex;flex-direction:column;gap:28px">
 
     <div id="health" class="health"></div>
 
     <div id="kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(120,190,220,.14);border:1px solid rgba(120,190,220,.14)"></div>
 
     <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
-      <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
+      <div class="race-head" style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
         <div style="display:flex;flex-direction:column;gap:5px">
           <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">La carrera <span style="color:#4d5c68">·</span> <span id="race-sub" style="color:#7d8f9c;font-weight:400">quién hace crecer mejor 10.000 €</span></h2>
           <p style="margin:0;font-size:13px;color:#7d8f9c">Mechanical (reglas) y Maverick (DeepSeek, advisory). Judgment y Congress se retiraron el 28-sep. La línea gris discontinua es «no hacer nada, comprar el índice».</p>
         </div>
-        <div style="display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase">
+        <div class="legend">
           <span style="display:flex;align-items:center;gap:7px;color:#d8b04a"><i style="width:16px;height:2px;background:#d8b04a;display:block"></i>mechanical</span>
           <span style="display:flex;align-items:center;gap:7px;color:#ff7a45"><i style="width:16px;height:2px;background:#ff7a45;display:block"></i>maverick</span>
           <span style="display:flex;align-items:center;gap:7px;color:#7d8f9c"><i style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7d8f9c 0 4px,transparent 4px 8px);display:block"></i>índice</span>
         </div>
       </div>
-      <div style="padding:20px 24px 8px">
+      <div class="chartwrap" style="padding:20px 24px 8px">
         <div class="chartbox"><canvas id="eq"></canvas></div>
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
-      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
-        <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-          <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Informe de estrategia <span style="color:#7d8f9c;font-weight:400">· cómo gana (o pierde) cada libro</span></h2>
-          <p style="margin:0;font-size:13px;color:#7d8f9c">Solo operaciones cerradas. Expectancy = € medios por operación después de comisiones.</p>
-        </div>
-        <div id="report"></div>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Informe de estrategia <span class="sub">· cómo gana (o pierde) cada libro</span></h2>
+        <p>Operaciones cerradas y curva de cada libro. Expectancy = € medios por operación después de comisiones.</p>
       </div>
-      <div style="border:1px solid rgba(216,176,74,.28);background:linear-gradient(180deg,rgba(216,176,74,.05),#070b11 40%)">
-        <div style="padding:18px 24px;border-bottom:1px solid rgba(216,176,74,.18);display:flex;flex-direction:column;gap:6px">
-          <span class="mono" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#d8b04a">GATE_A_v2 · firmado 20-ago-2026</span>
-          <h2 style="margin:0;font-size:20px;font-weight:600">Tres tests antes de dinero real</h2>
-          <p style="margin:0;font-size:13px;color:#7d8f9c">El P&amp;L de la ventana de papel <strong style="color:#e8f0f5;font-weight:600">no es criterio de ningún test</strong> — se reporta con su banda ±2σ y no decide nada.</p>
-        </div>
-        <div id="gates" style="display:flex;flex-direction:column;font-size:13px;line-height:1.5">
-          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
-            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#4ad8e6;display:block;margin-bottom:8px">T1 · VALIDACIÓN (backtest OOS)</b>
-            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
-              <li>T1.1 Sharpe OOS &gt; 0 en ≥60 % folds anuales y agregado &gt; 0</li>
-              <li>T1.2 Sharpe OOS ≥ equal-weight del universo + 0,15</li>
-              <li>T1.3 maxDD OOS ≤ 1,25 × maxDD del equal-weight</li>
-              <li>T1.4 Robustez ±50 % parámetros — ≥2/3 variantes dentro del 30 % del base</li>
-              <li>T1.5 Turnover y exposición media documentados (contrato para T3)</li>
-            </ul>
-          </div>
-          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
-            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#d8b04a;display:block;margin-bottom:8px">T2 · OPERACIÓN (60 días papel, ~20 oct)</b>
-            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
-              <li>T2.1 ≥58/60 runs diarios limpios por CI · 0 intervenciones manuales</li>
-              <li>T2.2 0 discrepancias en replay audit semanal</li>
-              <li>T2.3 Guardarrailes: 0 falsos positivos/negativos auditados</li>
-              <li>T2.4 Datos verificados · rechazos resueltos en ≤72 h</li>
-            </ul>
-          </div>
-          <div style="padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
-            <b class="mono" style="font-size:10px;letter-spacing:.2em;color:#e39bd0;display:block;margin-bottom:8px">T3 · FIDELIDAD (papel vs contrato T1)</b>
-            <ul style="margin:0;padding-left:18px;color:#a9b8c2">
-              <li>T3.1 Turnover papel dentro de ±50 % del esperado (T1.5)</li>
-              <li>T3.2 Exposición media dentro de ±15 pp de la esperada</li>
-              <li>T3.3 Tamaños de operación consistentes con el backtest</li>
-              <li>T3.4 Divergencia papel-vs-simulación diaria = 0 (mismo código y datos)</li>
-            </ul>
-          </div>
-          <div style="padding:14px 24px;color:#7d8f9c;font-size:12px">
-            Los tres PASAN → Gate B (Kraken micro) → Gate C (€500 con breakers). Cualquier FAIL → diagnóstico; arreglo de estrategia reinicia T2/T3.
-          </div>
-        </div>
-      </div>
-    </div>
+      <div id="report" class="twocol"></div>
+    </section>
 
-    <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
-      <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-        <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">Sala de gestores <span style="color:#7d8f9c;font-weight:400">· por qué está cada posición</span></h2>
-        <p style="margin:0;font-size:13px;color:#7d8f9c">Solo libros de papel. El porqué sale de las reglas de Mechanical o del racional de Maverick — no de cuentas reales.</p>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Sala de gestores <span class="sub">· por qué está cada posición</span></h2>
+        <p>Solo libros de papel. El porqué sale de las reglas de Mechanical o del racional de Maverick — no de cuentas reales.</p>
       </div>
-      <div id="sala" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;background:rgba(120,190,220,.1)"></div>
-    </div>
+      <div id="sala" class="twocol"></div>
+    </section>
 
-    <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start">
-      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11">
-        <div style="padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-          <h2 style="margin:0 0 5px;font-size:20px;font-weight:600">En el taller <span style="color:#7d8f9c;font-weight:400">· sprint y PRs abiertos</span></h2>
-          <p style="margin:0;font-size:13px;color:#7d8f9c">Export sanitizado <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">work.json</code> (05:15). El espejo de GitHub no se lee con la clave pública.</p>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Camino a dinero real <span class="sub">· GATE_A_v2 y próximos pasos</span></h2>
+        <p>El P&amp;L de papel <strong style="color:#e8f0f5;font-weight:600">no es criterio de ningún test</strong>. Los tres pasan → Gate B (Kraken micro) → Gate C (€500 con breakers).</p>
+      </div>
+      <div class="twocol">
+        <div class="cell">
+          <div id="gate-clock" class="mono" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#d8b04a;margin-bottom:12px"></div>
+          <details class="gate"><summary><b style="color:#4ad8e6">T1 · Validación</b><span>backtest fuera de muestra</span><span class="chip n">sin evaluar</span></summary>
+            <ul>
+              <li>Sharpe OOS &gt; 0 en ≥60 % de folds anuales y agregado &gt; 0</li>
+              <li>Sharpe OOS ≥ equal-weight del universo + 0,15</li>
+              <li>maxDD OOS ≤ 1,25 × maxDD del equal-weight</li>
+              <li>Robustez ±50 % parámetros — ≥2/3 variantes dentro del 30 % del base</li>
+              <li>Turnover y exposición media documentados (contrato para T3)</li>
+            </ul></details>
+          <details class="gate"><summary><b style="color:#d8b04a">T2 · Operación</b><span>60 días de papel limpios</span><span class="chip n">en curso</span></summary>
+            <ul>
+              <li>≥58/60 runs diarios limpios por CI · 0 intervenciones manuales</li>
+              <li>0 discrepancias en el replay audit semanal</li>
+              <li>Guardarrailes: 0 falsos positivos/negativos auditados</li>
+              <li>Datos verificados · rechazos resueltos en ≤72 h</li>
+            </ul></details>
+          <details class="gate"><summary><b style="color:#e39bd0">T3 · Fidelidad</b><span>papel vs contrato de T1</span><span class="chip n">sin evaluar</span></summary>
+            <ul>
+              <li>Turnover de papel dentro de ±50 % del esperado</li>
+              <li>Exposición media dentro de ±15 pp de la esperada</li>
+              <li>Tamaños de operación consistentes con el backtest</li>
+              <li>Divergencia papel-vs-simulación diaria = 0</li>
+            </ul></details>
+          <p class="muted" style="font-size:12px;margin:12px 0 0">Cualquier FAIL → diagnóstico; un arreglo de estrategia reinicia T2/T3.</p>
         </div>
-        <div id="taller"></div>
+        <div class="cell">
+          <div class="mono" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7d8f9c;margin-bottom:16px">próximos pasos · steps.json</div>
+          <div id="roadmap" style="display:flex;flex-direction:column;gap:0"></div>
+        </div>
       </div>
-      <div style="border:1px solid rgba(120,190,220,.14);background:#070b11;padding:22px 24px">
-        <h2 style="margin:0 0 4px;font-size:20px;font-weight:600">Próximos pasos</h2>
-        <p style="margin:0 0 20px;font-size:13px;color:#7d8f9c">Roadmap viva desde <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">steps.json</code> — se actualiza al cerrar issues con label <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4d5c68">roadmap</code>.</p>
-        <div id="roadmap" style="display:flex;flex-direction:column;gap:0"></div>
-      </div>
-    </div>
+    </section>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:8px;border-top:1px solid rgba(120,190,220,.1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#4d5c68;flex-wrap:wrap">
+    <div class="foot" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:8px;border-top:1px solid rgba(120,190,220,.1);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#4d5c68;flex-wrap:wrap">
       <span>mechanical = reglas sma/rsi · maverick = gestor deepseek advisory</span>
       <span style="color:#3d4a54">no es asesoramiento financiero</span>
     </div>
@@ -289,41 +333,6 @@ async function loadRoadmap() {
   }
 }
 
-async function loadWork() {
-  try {
-    const r = await fetch("work.json", { cache: "no-cache" });
-    if (!r.ok) throw new Error("work.json unavailable");
-    renderTaller(await r.json());
-  } catch {
-    document.getElementById("taller").innerHTML =
-      '<p class="muted" style="padding:18px 24px;margin:0;font-size:14px">Taller vacío — falta work.json (sale del sync 05:15).</p>';
-  }
-}
-
-function renderTaller(work) {
-  const el = document.getElementById("taller");
-  const issues = work.issues || [];
-  const prs = work.prs || [];
-  if (!issues.length && !prs.length) {
-    el.innerHTML = '<p class="muted" style="padding:18px 24px;margin:0;font-size:14px">Nada abierto en el sprint.</p>';
-    return;
-  }
-  const sprint = work.sprint ? esc(work.sprint) : "sprint";
-  const row = (kind, item) => {
-    const st = (item.estado || "open").toLowerCase();
-    const chip = st === "open" ? "a" : st === "merged" || st === "closed" ? "n" : "n";
-    return `<div style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:12px 24px;border-bottom:1px solid rgba(120,190,220,.06)">
-      <span class="mono" style="font-size:11px;color:#4d5c68">${esc(kind)} #${esc(item.number)}</span>
-      <span style="font-size:14px;color:#c3d2da">${esc(item.title)}</span>
-      <span class="chip ${chip}" style="letter-spacing:.12em">${esc(item.label || st)} · ${esc(item.repo || "")}</span>
-    </div>`;
-  };
-  el.innerHTML =
-    `<div class="mono" style="padding:12px 24px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68">${sprint}${work.as_of ? " · " + esc(work.as_of) : ""}</div>` +
-    issues.map(i => row("issue", i)).join("") +
-    prs.map(p => row("pr", p)).join("");
-}
-
 function renderSala(openRows, decisions) {
   const el = document.getElementById("sala");
   const byBook = {};
@@ -372,21 +381,47 @@ function renderSala(openRows, decisions) {
   }).join("");
 }
 
-function reportHeader() {
-  return `<div style="display:grid;grid-template-columns:1.3fr repeat(5,1fr);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4d5c68;padding:14px 24px;border-bottom:1px solid rgba(120,190,220,.1)">
-    <span>libro</span><span style="text-align:right">cerradas</span><span style="text-align:right">acierto</span><span style="text-align:right">expectancy</span><span style="text-align:right">profit factor</span><span style="text-align:right">max dd</span>
-  </div>`;
+// Universo cripto del researcher (config.py → CRYPTO). El resto son acciones y ETFs.
+const CRYPTO = new Set(["BTC", "ETH", "SOL", "NEAR", "UNI", "SUI"]);
+// Agrupado a mano: es-ES no separa miles en números de 4 cifras ("1495") y queremos "1.495" como en el resto.
+const group3 = n => String(Math.round(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const eur0 = v => (v >= 0 ? "+" : "−") + group3(v) + " €";
+const num2 = v => v.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function splitRows(title, parts) {
+  const max = Math.max(...parts.map(p => Math.abs(p.pnl)), 1);
+  return `<div class="split"><div class="split-title">${title}</div>` + parts.map(p => {
+    const w = Math.max(2, Math.abs(p.pnl) / max * 100);
+    return `<div class="split-row">
+      <span>${p.label} <span class="muted mono" style="font-size:11px">· ${p.n} ops</span></span>
+      <span class="mono ${cls(p.pnl)}">${p.n ? eur0(p.pnl) : "–"}</span>
+      <i style="width:${w}%;background:${p.pnl >= 0 ? "#46e0a0" : "#f07a6a"}"></i>
+    </div>`;
+  }).join("") + `</div>`;
 }
-function reportRow(name, color, closed, winRate, exp, pf, dd) {
-  const expCls = exp != null && exp >= 0 ? "good" : "bad";
-  const expStr = exp != null ? (exp >= 0 ? "+" : "−") + Math.abs(exp).toLocaleString("es-ES", {minimumFractionDigits:2,maximumFractionDigits:2}) + " €" : "–";
-  const pfStr = pf != null ? pf.toLocaleString("es-ES", {minimumFractionDigits:2,maximumFractionDigits:2}) : "–";
-  const wrStr = closed ? winRate.toLocaleString("es-ES", {minimumFractionDigits:1,maximumFractionDigits:1}) + " %" : "–";
-  return `<div style="display:grid;grid-template-columns:1.3fr repeat(5,1fr);align-items:center;padding:18px 24px;border-bottom:1px solid rgba(120,190,220,.06);font-family:'IBM Plex Mono',monospace;font-size:15px">
-    <span style="display:flex;align-items:center;gap:10px;font-family:'Chakra Petch',sans-serif;font-size:15px;font-weight:600"><i style="width:3px;height:22px;background:${color};display:block;box-shadow:0 0 8px ${color}"></i>${BOOKS[name].label}</span>
-    <span style="text-align:right">${closed}</span><span style="text-align:right">${wrStr}</span>
-    <span style="text-align:right" class="${expCls}">${expStr}</span><span style="text-align:right">${pfStr}</span>
-    <span style="text-align:right" class="bad">−${dd.toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1})} %</span>
+
+function bookCard(s) {
+  const bk = BOOKS[s.name];
+  const stat = (label, value, klass = "") =>
+    `<div class="stat"><span>${label}</span><b class="mono ${klass}">${value}</b></div>`;
+  return `<div class="cell">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <i style="width:3px;height:22px;background:${bk.color};display:block;box-shadow:0 0 8px ${bk.color}"></i>
+      <span style="font-size:18px;font-weight:600;color:${bk.color}">${bk.label}</span>
+      <span class="mono muted" style="font-size:10px;letter-spacing:.16em;text-transform:uppercase">${s.days} días</span>
+    </div>
+    <div class="stats">
+      ${stat("retorno", fmtPct(s.ret), cls(s.ret))}
+      ${stat("dd actual", s.ddNow < 0.05 ? "en máximos" : "−" + num2(s.ddNow) + " %", s.ddNow < 0.05 ? "good" : "warn")}
+      ${stat("max dd", "−" + num2(s.dd) + " %", "bad")}
+      ${stat("abiertas", s.open)}
+      ${stat("cerradas", s.closed)}
+      ${stat("acierto", s.closed ? num2(s.wins / s.closed * 100) + " %" : "–")}
+      ${stat("expectancy", s.exp != null ? eur0(s.exp) : "–", s.exp != null ? cls(s.exp) : "")}
+      ${stat("profit factor", s.pf != null ? num2(s.pf) : "–")}
+    </div>
+    ${splitRows("de dónde sale el p&amp;l cerrado", s.byClass)}
+    ${splitRows("cómo se cierran las operaciones", s.byExit)}
   </div>`;
 }
 
@@ -398,7 +433,6 @@ setInterval(() => {
 
 async function load() {
   loadRoadmap();
-  loadWork();
   try {
     const [mechEq, spy, closedAll, healthRows] = await Promise.all([
       get("dash_equity?book=eq.mechanical&select=as_of,equity&order=as_of"),
@@ -466,6 +500,7 @@ async function load() {
       return spy0 ? 10000 * lastSpy / spy0 : null;
     });
 
+    const narrow = window.matchMedia("(max-width: 760px)").matches;
     Chart.defaults.color = "#4d5c68";
     Chart.defaults.borderColor = "rgba(120,190,220,.08)";
     new Chart(document.getElementById("eq"), {
@@ -479,8 +514,8 @@ async function load() {
         responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { maxTicksLimit: 8, font: { family: "'IBM Plex Mono'" } }, grid: { color: "rgba(120,190,220,.06)" } },
-          y: { ticks: { font: { family: "'IBM Plex Mono'" }, callback: v => v.toLocaleString("es-ES") + " €" }, grid: { color: "rgba(120,190,220,.08)" } },
+          x: { ticks: { maxTicksLimit: narrow ? 4 : 8, maxRotation: 0, font: { family: "'IBM Plex Mono'", size: narrow ? 10 : 12 }, callback: function (v) { return fmtRoadmapDate(this.getLabelForValue(v)); } }, grid: { color: "rgba(120,190,220,.06)" } },
+          y: { ticks: { maxTicksLimit: narrow ? 5 : 8, font: { family: "'IBM Plex Mono'", size: narrow ? 10 : 12 }, callback: v => (narrow ? (v / 1000).toLocaleString("es-ES", { maximumFractionDigits: 1 }) + "k" : v.toLocaleString("es-ES") + " €") }, grid: { color: "rgba(120,190,220,.08)" } },
         },
       },
     });
@@ -491,22 +526,41 @@ async function load() {
       curve.forEach(x => { const v = Number(x.equity); peak = Math.max(peak, v); dd = Math.max(dd, (peak - v) / peak * 100); });
       return dd;
     };
-    const stats = Object.keys(BOOKS).map(name => {
-      const closed = closedAll.filter(c => c.book === name && c.pnl_eur != null).map(c => Number(c.pnl_eur));
-      const wins = closed.filter(x => x > 0);
-      const losses = closed.filter(x => x <= 0);
-      const exp = closed.length ? closed.reduce((a, b) => a + b, 0) / closed.length : null;
-      const sumW = wins.reduce((a, b) => a + b, 0);
-      const sumL = Math.abs(losses.reduce((a, b) => a + b, 0));
-      const pf = sumL > 0 ? sumW / sumL : (sumW > 0 ? null : null);
-      const dd = maxDD(curveOf[name]);
-      const alpha = ret(last(curveOf[name])) - spyRet;
-      return { name, closed: closed.length, wins: wins.length, exp, pf, dd, alpha };
+    const sum = arr => arr.reduce((a, b) => a + b, 0);
+    const group = (rows, keyOf, order) => order.map(([key, label]) => {
+      const sel = rows.filter(r => keyOf(r) === key);
+      return { label, n: sel.length, pnl: sum(sel.map(r => Number(r.pnl_eur))) };
     });
+    const stats = Object.keys(BOOKS).map(name => {
+      const rows = closedAll.filter(c => c.book === name && c.pnl_eur != null);
+      const closed = rows.map(c => Number(c.pnl_eur));
+      const wins = closed.filter(x => x > 0);
+      const sumL = Math.abs(sum(closed.filter(x => x <= 0)));
+      const curve = curveOf[name];
+      const eqs = curve.map(x => Number(x.equity));
+      const peak = eqs.length ? Math.max(...eqs) : 10000;
+      const days = curve.length
+        ? Math.round((new Date(curve[curve.length - 1].as_of) - new Date(curve[0].as_of)) / 864e5) + 1 : 0;
+      return {
+        name, days,
+        ret: ret(last(curve)),
+        closed: closed.length, wins: wins.length,
+        exp: closed.length ? sum(closed) / closed.length : null,
+        pf: sumL > 0 ? sum(wins) / sumL : null,
+        dd: maxDD(curve),
+        ddNow: eqs.length ? (peak - eqs[eqs.length - 1]) / peak * 100 : 0,
+        open: (openDetail || []).filter(p => p.book === name).length,
+        byClass: group(rows, r => CRYPTO.has(r.symbol) ? "c" : "e", [["c", "Cripto"], ["e", "Acciones y ETF"]]),
+        byExit: group(rows, r => /floor hit/i.test(r.exit_reason || "") ? "s" : "d",
+          [["s", "Stop / trailing"], ["d", name === "maverick" ? "Decisión de Maverick" : "Señal de salida (SMA)"]]),
+      };
+    });
+    document.getElementById("report").innerHTML = stats.map(bookCard).join("");
 
-    document.getElementById("report").innerHTML = reportHeader() +
-      stats.map(s => reportRow(s.name, BOOKS[s.name].color, s.closed,
-        s.closed ? s.wins / s.closed * 100 : 0, s.exp, s.pf, s.dd)).join("");
+    const tDays = Math.ceil((new Date("2026-10-20T12:00:00") - new Date()) / 864e5);
+    document.getElementById("gate-clock").textContent = tDays > 0
+      ? `T2 cierra el 20 oct · faltan ${tDays} días`
+      : "ventana T2 cerrada · toca revisión";
 
     renderSala(openDetail, decisions);
 
